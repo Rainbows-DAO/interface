@@ -19,7 +19,7 @@ export const UserContextProvider = ({ children }) => {
 		Moralis,
 		isInitialized,
 	} = useMoralis();
-	const { getBalances, data } = useNativeBalance({ chain: chainId });
+	const { getBalances } = useNativeBalance({ chain: chainId });
 	const [unitBalance, setUnitBalance] = useState(0);
 	const [nativeBalance, setNativeBalance] = useState(0);
 	const [userLoop, setUserLoops] = useState([]);

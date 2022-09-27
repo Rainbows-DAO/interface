@@ -1,9 +1,6 @@
-import React, { useContext, useEffect, useState } from "react";
 import { useMoralis, useWeb3ExecuteFunction } from "react-moralis";
 import ABI from "../../constants/abi/contracts/GovernorContract.sol/GovernorContract.json";
 import { toast } from "react-toastify";
-import contracts from "../../constants/contractAddresses.json";
-import { UserContext } from "../../providers/UserContextProvider";
 import {
 	PENDING_MESSAGE,
 	SUCCESS_MESSAGE,
@@ -11,7 +8,7 @@ import {
 } from "../../constants/ToastMessage";
 import { getProposalStateFromValue } from "../../constants/proposalState";
 export const useGovernorContract = (governorAddress) => {
-	const { chainId, Moralis, enableWeb3, user } = useMoralis();
+	const {  Moralis,  user } = useMoralis();
 	const { fetch } = useWeb3ExecuteFunction();
 
 	const castVote = async ({ vote, proposalId, support, onSuccess }) => {
@@ -31,7 +28,7 @@ export const useGovernorContract = (governorAddress) => {
 			onSuccess: (tx) => {
 				console.log(tx);
 				toast.promise(
-					tx?.wait().then(async (final: any) => {
+					tx?.wait().then(async (final) => {
 						console.log(final);
 
 						await Moralis.Cloud.run("saveProposalVote", {

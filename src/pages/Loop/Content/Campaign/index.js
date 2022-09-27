@@ -1,18 +1,13 @@
 import { PageContainer } from "../../style";
 import {
-	Card,
-	Filter,
 	Flexbox,
 	IconButton,
 	Line,
 	MentionTag,
 	Typography,
 	Button,
-	Slider,
 	Graph,
 	Legend,
-	Banner,
-	ButtonVote,
 	Link,
 	UserListItem,
 } from "rainbows-ui";
@@ -20,7 +15,6 @@ import { UNIT_TOKEN } from "../../../../constants/constants";
 import { tokenValueTxt } from "../../../../helpers/formatters";
 import { useContext, useMemo, useState } from "react";
 import { LoopContext } from "../../../../providers/LoopContextProvider";
-import { calcTotalBudget } from "../../../../helpers/calculs";
 import { useParams } from "react-router";
 import { useAppNavigation } from "../../../../hooks/useAppNavigation";
 import rainbowsTheme from "rainbows-ui/ThemeProvider/styles";
@@ -28,24 +22,18 @@ import { getShortWallet } from "../../../../helpers/shortWallet";
 import { ItemCard } from "../../../../components/core/Cards/ItemCard";
 import { getCampaignStateFromText } from "../../../../constants/campaignState";
 import styled from "styled-components";
-import { UserContext } from "../../../../providers/UserContextProvider";
 
 import { BannerPledge } from "../../../../components/core/banners/Pledge/index";
 import { BannerClaimFund } from "../../../../components/core/banners/ClaimFund/index";
-import { toast } from "react-toastify";
 import { useMoralis } from "react-moralis";
 import moment from "moment";
 import { Pagination } from "@mui/material";
-import Tag from "rainbows-ui/components/Atoms/Tag/Tag";
-import { useCrowdfundContract } from "../../../../hooks/Crowdfund/useCrowdfundContract";
 
 export const Campaign = () => {
 	const params = useParams();
 	const { user, Moralis } = useMoralis();
 	const { campaigns, getCampaigns, proposals, loop } = useContext(LoopContext);
-	const { isUserMember } = useContext(UserContext);
 	const { goBack, goToProposal } = useAppNavigation();
-	const { getCampaign } = useCrowdfundContract(loop?.fundraiser);
 
 	const campaign = useMemo(() => {
 		let result = campaigns.find(({ id }) => id === parseInt(params.campaignId));

@@ -1,14 +1,11 @@
-import { title } from "process";
 import {
 	Button,
-	EmojiPicker,
 	Flexbox,
 	SelectEmoji,
 	TextField,
 	Typography,
 } from "rainbows-ui";
 import { useContext, useState } from "react";
-import { useMoralis } from "react-moralis";
 import styled from "styled-components";
 import { LoopContext } from "../../../../providers/LoopContextProvider";
 import { FormContainer } from "../../style";
@@ -16,8 +13,6 @@ import { usePlanContract } from "../../../../hooks/Plan/usePlanContract";
 import { useAppNavigation } from "../../../../hooks/useAppNavigation";
 
 export const CreateItem = () => {
-	const [isEmojiModal, setIsEmojiModal] = useState(false);
-	const { Moralis, user } = useMoralis();
 	const { loop } = useContext(LoopContext);
 	const { goToItem } = useAppNavigation();
 

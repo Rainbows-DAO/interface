@@ -1,10 +1,9 @@
 import { PageContainer } from "../../style";
-import { Card, Filter, Flexbox, Typography } from "rainbows-ui";
+import { Card,  Flexbox, Typography } from "rainbows-ui";
 import { UNIT_TOKEN } from "../../../../constants/constants";
 import { tokenValueTxt } from "../../../../helpers/formatters";
 import { useContext, useMemo } from "react";
 import { LoopContext } from "../../../../providers/LoopContextProvider";
-import { calcTotalBudget } from "../../../../helpers/calculs";
 import { useAppNavigation } from "../../../../hooks/useAppNavigation";
 export const SearchItem = () => {
 	const { items, loop, totalBudget, claimedCampaignProposal } =

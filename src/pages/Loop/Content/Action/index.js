@@ -1,26 +1,17 @@
 import { PageContainer } from "../../style";
 import {
-	Card,
-	Filter,
 	Flexbox,
 	IconButton,
 	Line,
 	MentionTag,
 	Typography,
 	Button,
-	Slider,
-	Graph,
-	Legend,
-	Banner,
-	ButtonVote,
 	Link,
-	UserListItem,
 } from "rainbows-ui";
 import { UNIT_TOKEN } from "../../../../constants/constants";
 import { tokenValueTxt } from "../../../../helpers/formatters";
 import { useContext, useMemo, useState } from "react";
 import { LoopContext } from "../../../../providers/LoopContextProvider";
-import { calcTotalBudget } from "../../../../helpers/calculs";
 import { useParams } from "react-router";
 import { useAppNavigation } from "../../../../hooks/useAppNavigation";
 import rainbowsTheme from "rainbows-ui/ThemeProvider/styles";
@@ -33,16 +24,12 @@ import { UserContext } from "../../../../providers/UserContextProvider";
 import { BannerValidateAction } from "../../../../components/core/banners/ValidateAction/index";
 import { BannerExecuteAction } from "../../../../components/core/banners/ExecuteAction/index";
 import { BannerPayAction } from "../../../../components/core/banners/PayAction/index";
-import { toast } from "react-toastify";
 import { useMoralis } from "react-moralis";
-import moment from "moment";
-import { Pagination } from "@mui/material";
-import Tag from "rainbows-ui/components/Atoms/Tag/Tag";
 
 export const Action = () => {
 	const params = useParams();
 	const { user } = useMoralis();
-	const { actions, items, claimedCampaignProposal, loop } =
+	const { actions, items,  loop } =
 		useContext(LoopContext);
 	const { isUserMember } = useContext(UserContext);
 	const { goBack, goToItem } = useAppNavigation();
@@ -253,16 +240,4 @@ const SliderStyle = styled.div`
 			width: max-content;
 		}
 	}
-`;
-
-const GraphSection = styled.section`
-	.graph {
-		> :first-child {
-			display: none;
-		}
-	}
-`;
-
-const UserListItemStyle = styled(UserListItem)`
-	width: 30rem;
 `;

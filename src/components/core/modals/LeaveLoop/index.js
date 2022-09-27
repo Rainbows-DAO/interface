@@ -2,8 +2,6 @@ import {
 	Avatar,
 	Dialog,
 	Typography,
-	ModalContent,
-	ModalSeparator,
 	Flexbox,
 } from "rainbows-ui";
 import { useContext } from "react";

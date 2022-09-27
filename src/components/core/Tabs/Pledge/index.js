@@ -1,4 +1,4 @@
-import { TreeItem, TreeView } from "rainbows-ui";
+import { TreeItem } from "rainbows-ui";
 import { useContext } from "react";
 import { LoopContext } from "../../../../providers/LoopContextProvider";
 import { useAppNavigation } from "../../../../hooks/useAppNavigation";

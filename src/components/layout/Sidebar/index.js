@@ -1,6 +1,5 @@
 import { MetaSidebar, Avatar } from "rainbows-ui";
 import { useContext, useEffect, useState } from "react";
-import { useMoralis, useMoralisSubscription } from "react-moralis";
 import styled from "styled-components";
 import logo from "../../../assets/svg/logoIcon.svg";
 import { CreateLoopModal } from "../../core/modals/CreateLoop/index";
@@ -8,7 +7,6 @@ import { useAppNavigation } from "../../../hooks/useAppNavigation";
 import { UserContext } from "../../../providers/UserContextProvider";
 import { useParams } from "react-router";
 export const SideBar = () => {
-	const { user, Moralis } = useMoralis();
 	const [isCreateLoopModal, setIsCreateLoopModal] = useState(false);
 	const handleCreateModal = () => setIsCreateLoopModal(!isCreateLoopModal);
 	const { goToLoops, goToALoop } = useAppNavigation();

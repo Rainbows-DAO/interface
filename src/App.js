@@ -1,11 +1,6 @@
 import { useMoralis } from "react-moralis";
 import { useEffect, useState } from "react";
-import {
-	BrowserRouter as Router,
-	Navigate,
-	Routes,
-	Route,
-} from "react-router-dom";
+import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 
 import { Login } from "./pages/Login/index";
 import { InitLoader } from "./components/layout/InitLoader/index";
@@ -40,15 +35,7 @@ import { ActionApproved } from "./pages/Loop/Content/ActionApproved/index";
 import { MyActions } from "./pages/Loop/Content/MyActions/index";
 function App() {
 	// Enable Moralis
-	const {
-		Moralis,
-		isWeb3Enabled,
-		enableWeb3,
-		isAuthenticated,
-		isWeb3EnableLoading,
-		user,
-		account,
-	} = useMoralis();
+	const { isAuthenticated, user, account } = useMoralis();
 	const { getUnitBalance } = useUnitToken();
 	const [loading, setLoading] = useState(false);
 

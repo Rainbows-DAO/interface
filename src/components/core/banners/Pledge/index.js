@@ -1,7 +1,4 @@
 import {
-	Button,
-	ButtonVote,
-	Flexbox,
 	Link,
 	TextField,
 	Typography,
@@ -9,8 +6,6 @@ import {
 import rainbowsTheme from "rainbows-ui/ThemeProvider/styles";
 import { useContext, useEffect, useMemo, useState } from "react";
 import { BannerStyle } from "../style";
-import { toast } from "react-toastify";
-import { useProposalPlan } from "../../../../hooks/Loop/useProposalPlan";
 import { LoopContext } from "../../../../providers/LoopContextProvider";
 import styled from "styled-components";
 import { UNIT_TOKEN } from "../../../../constants/constants";

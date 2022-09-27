@@ -1,37 +1,17 @@
-import {
-	Button,
-	ButtonVote,
-	Flexbox,
-	Link,
-	TextField,
-	Typography,
-} from "rainbows-ui";
-import rainbowsTheme from "rainbows-ui/ThemeProvider/styles";
-import { useContext, useState } from "react";
+import { useContext } from "react";
 import { BannerStyle } from "../style";
-import { toast } from "react-toastify";
 import { useProposalPlan } from "../../../../hooks/Loop/useProposalPlan";
 import { LoopContext } from "../../../../providers/LoopContextProvider";
-import styled from "styled-components";
-import { UNIT_TOKEN } from "../../../../constants/constants";
-import { UserContext } from "../../../../providers/UserContextProvider";
-import { useUnitToken } from "../../../../hooks/Unit/useUnitToken";
 
-import { useCrowdfundContract } from "../../../../hooks/Crowdfund/useCrowdfundContract";
 export const BannerClaimFund = ({ campaignId }) => {
 	const { loop, updateLoopState } = useContext(LoopContext);
-	const [amount, setAmount] = useState(null);
 	const { claimFund } = useProposalPlan(loop?.address);
-
-	function isValidAmount() {
-		return amount !== null && amount !== undefined;
-	}
 
 	const onClickClaim = () => {
 		claimFund({
 			campaignId: campaignId,
 			onSuccess: () => {
-			  updateLoopState(loop?.address)
+				updateLoopState(loop?.address);
 			},
 		});
 	};
@@ -56,23 +36,3 @@ export const BannerClaimFund = ({ campaignId }) => {
 		</>
 	);
 };
-
-const PledgeTextField = styled(TextField)`
-	&& {
-		color: white;
-
-		width: 60rem;
-		bottom: 0px;
-		position: relative;
-		top: 17px;
-		* {
-			color: white;
-		}
-		input {
-			color: white !important;
-			::placeholder {
-				color: ${rainbowsTheme.colors.darkKnight10};
-			}
-		}
-	}
-`;

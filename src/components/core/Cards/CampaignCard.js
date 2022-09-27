@@ -1,19 +1,15 @@
-import { Card, Flexbox, Graph, MentionTag, Typography } from "rainbows-ui";
+import {  Flexbox, Graph, MentionTag, Typography } from "rainbows-ui";
 import { useContext } from "react";
 import { useAppNavigation } from "../../../hooks/useAppNavigation";
 import { LoopContext } from "../../../providers/LoopContextProvider";
 import { tokenValueTxt } from "../../../helpers/formatters";
 import { UNIT_TOKEN } from "../../../constants/constants";
-import { useMoralis } from "react-moralis";
 import styled from "styled-components";
-import rainbowsTheme from "rainbows-ui/ThemeProvider/styles";
-import { getShortWallet } from "../../../helpers/shortWallet";
 import { getCampaignStateFromText } from "../../../constants/campaignState";
 
 export const CampaignCard = ({ campaign }) => {
 	const { goToCampaign } = useAppNavigation();
 	const { loop } = useContext(LoopContext);
-	const { user } = useMoralis();
 
 	function percentagePledged() {
 		return campaign?.pledge / campaign?.goal;

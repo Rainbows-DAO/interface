@@ -1,12 +1,11 @@
-import { TreeItem, TreeView } from "rainbows-ui";
+import { TreeItem } from "rainbows-ui";
 import { useContext } from "react";
-import { useParams } from "react-router";
 import { useAppNavigation } from "../../../../hooks/useAppNavigation";
 import { LoopContext } from "../../../../providers/LoopContextProvider";
 import { UserContext } from "../../../../providers/UserContextProvider";
 
 export const PlanifyTab = () => {
-	const { loop, items } = useContext(LoopContext);
+	const { loop } = useContext(LoopContext);
 	const { isUserMember } = useContext(UserContext);
 	const { goToCreateItem, goToSearchItems, goToMyItems, goToItemsDeleted } =
 		useAppNavigation();

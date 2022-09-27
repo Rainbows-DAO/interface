@@ -1,10 +1,7 @@
 import {
-	Avatar,
 	Dialog,
 	Typography,
 	ModalContent,
-	ModalSeparator,
-	Flexbox,
 } from "rainbows-ui";
 
 export const HelpImproveModal = ({ isOpen, handleOpen }) => {

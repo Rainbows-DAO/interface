@@ -7,7 +7,6 @@ import { UNIT_TOKEN } from "../../../constants/constants";
 import { useMoralis } from "react-moralis";
 import styled from "styled-components";
 import rainbowsTheme from "rainbows-ui/ThemeProvider/styles";
-import { getShortWallet } from "../../../helpers/shortWallet";
 import { getProposalStateFromText } from "../../../constants/proposalState";
 
 export const ProposalCard = ({ proposal }) => {

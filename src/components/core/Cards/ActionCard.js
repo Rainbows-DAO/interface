@@ -1,4 +1,4 @@
-import { Card, Flexbox, Graph, MentionTag, Typography } from "rainbows-ui";
+import { Flexbox, MentionTag, Typography } from "rainbows-ui";
 import { useContext } from "react";
 import { useAppNavigation } from "../../../hooks/useAppNavigation";
 import { LoopContext } from "../../../providers/LoopContextProvider";
@@ -40,7 +40,7 @@ export const ActionCard = ({ action }) => {
 					{tokenValueTxt(action?.cost, UNIT_TOKEN.decimal, UNIT_TOKEN.ticker)}{" "}
 					to {getShortWallet(action?.payee)}
 				</Typography>{" "}
-				{state != 0 && (
+				{state !== 0 && (
 					<MentionTag text={state?.text} type={state?.colorVariant} />
 				)}{" "}
 			</Flexbox>

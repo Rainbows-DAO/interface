@@ -1,4 +1,4 @@
-import { TreeItem, TreeView } from "rainbows-ui";
+import { TreeItem } from "rainbows-ui";
 import { useContext } from "react";
 import { useMoralis } from "react-moralis";
 import { useAppNavigation } from "../../../../hooks/useAppNavigation";
@@ -13,7 +13,7 @@ export const DecideTab = () => {
 		goToProposalsRunning,
 		goToProposalEnded,
 	} = useAppNavigation();
-	const { loop, delegatee, items, proposals } = useContext(LoopContext);
+	const { loop, delegatee, items } = useContext(LoopContext);
 	const { isUserMember } = useContext(UserContext);
 	const { user } = useMoralis();
 	return (

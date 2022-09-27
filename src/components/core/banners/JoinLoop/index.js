@@ -1,4 +1,4 @@
-import { Banner, Button, Flexbox, Typography } from "rainbows-ui";
+import { Banner } from "rainbows-ui";
 import { useContext } from "react";
 import { LoopContext } from "../../../../providers/LoopContextProvider";
 import styled from "styled-components";

@@ -1,7 +1,6 @@
 import { Avatar, InfoNavbar, InfoNavItem, InfoSidebar } from "rainbows-ui";
 import { useContext, useState } from "react";
 import { LoopContext } from "../../../providers/LoopContextProvider";
-import { getCoalitionFromVariant } from "../../../constants/coalition";
 import { useAppNavigation } from "../../../hooks/useAppNavigation";
 import { AllMembers } from "./Content/AllMembers";
 import { LeaveLoopModal } from "../../../components/core/modals/LeaveLoop";
@@ -11,7 +10,7 @@ import { UserContext } from "../../../providers/UserContextProvider";
 export const InfoPage = ({ state = "general" }) => {
 	const { loop } = useContext(LoopContext);
 	const { isUserMember } = useContext(UserContext);
-	const { goBack, goToAllMembers, goToALoop, goToLoopInfo } =
+	const {  goToAllMembers, goToALoop, goToLoopInfo } =
 		useAppNavigation();
 	const [isLeaveLoopModal, setIsLeaveLoopModal] = useState(false);
 	const handleLeaveLoopModal = () => setIsLeaveLoopModal(!isLeaveLoopModal);

@@ -1,14 +1,12 @@
 import { Header } from "../../../components/layout/Header/style";
 import { AvatarButton } from "../../../components/core/AvatarButton/index";
-import { useNavigate } from "react-router";
-import { useContext, useEffect, useMemo, useRef, useState } from "react";
+import { useContext, useEffect,  useRef, useState } from "react";
 import { useMoralis } from "react-moralis";
 import {
 	Button,
 	Flexbox,
 	Stepper,
 	UploadAvatar,
-	loadFile,
 	TextField,
 	AutoColorSlider,
 	Typography,
@@ -17,9 +15,7 @@ import {
 import { UserContext } from "../../../providers/UserContextProvider";
 import styled from "styled-components";
 import { PERSONALITIES_COLOR } from "../../../constants/cutomizeMessage";
-import { generateRandom } from "../../../helpers/random";
 import { COALITION } from "../../../constants/coalition";
-import { removeFromArray } from "../../../helpers/array";
 import { useAppNavigation } from "../../../hooks/useAppNavigation";
 
 const rand = Math.floor(Math.random() * (PERSONALITIES_COLOR.length - 1));
@@ -27,14 +23,11 @@ const rand = Math.floor(Math.random() * (PERSONALITIES_COLOR.length - 1));
 export const Edit = () => {
 	const {
 		user,
-		account,
-		isAuthenticated,
 		chainId,
 		setUserData,
 		refetchUserData,
 	} = useMoralis();
 	const { goToLoops } = useAppNavigation();
-	const navigate = useNavigate();
 	const { editAvatar, editUsername } = useContext(UserContext);
 
 	const [step, setStep] = useState(1);

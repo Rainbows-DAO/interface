@@ -1,25 +1,17 @@
 import {
-	DiscoverHeader,
 	Flexbox,
 	LoopHeader,
-	ButtonVote,
-	TextField,
-	Avatar,
 	MentionTag,
 	TabPanel,
 	Tabs,
 	TabContext,
-	Slider,
-	InfoNavItem,
-	TreeItem,
 	TreeView,
-	Banner,
 	Typography,
 } from "rainbows-ui";
 import styled from "styled-components";
 import { SideBar } from "../Sidebar/index";
 import { AvatarButton } from "../../core/AvatarButton/index";
-import { LOOP_STATE, getStateFromName } from "../../../constants/loopState";
+import { getStateFromName } from "../../../constants/loopState";
 import { useContext, useMemo, useState } from "react";
 import { PlanifyTab } from "../../core/Tabs/Planify/index";
 
@@ -366,11 +358,4 @@ const PageZone = styled.div`
 	align-items: center;
 	flex-direction: column;
 	justify-content: flex-start;
-`;
-
-const BannerStyle = styled(Banner)`
-	position: absolute;
-	bottom: 0px;
-	right: 0px;
-	width: calc(100%);
 `;

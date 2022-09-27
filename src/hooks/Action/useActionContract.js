@@ -1,17 +1,14 @@
-import React, { useContext, useEffect, useState } from "react";
 import { useMoralis, useWeb3ExecuteFunction } from "react-moralis";
 import ABI from "../../constants/abi/contracts/Actions.sol/Actions.json";
 import ABILoop from "../../constants/abi/contracts/Loop.sol/Loop.json";
 import { toast } from "react-toastify";
-import contracts from "../../constants/contractAddresses.json";
-import { UserContext } from "../../providers/UserContextProvider";
 import {
 	PENDING_MESSAGE,
 	SUCCESS_MESSAGE,
 	ERROR_MESSAGE,
 } from "../../constants/ToastMessage";
 export const useActionContract = (actionAddress) => {
-	const { chainId, Moralis, enableWeb3, user } = useMoralis();
+	const {  Moralis, user } = useMoralis();
 	const { fetch } = useWeb3ExecuteFunction();
 
 	const createAction = async ({ action, onSuccess = (actionId) => {} }) => {

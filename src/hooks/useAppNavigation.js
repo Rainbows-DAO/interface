@@ -1,16 +1,10 @@
-import { useContext } from "react";
 import { useNavigate } from "react-router";
-import {
-	LoopContext,
-	LoopContextProvider,
-} from "../providers/LoopContextProvider";
 export const useAppNavigation = () => {
 	const navigate = useNavigate();
 
 	const goBack = () => {
 		navigate(-1);
 	};
-	const { setLoopAddress } = useContext(LoopContext);
 
 	const goToEditProfile = () => {
 		navigate(`/user-profile/edit`);
@@ -21,7 +15,6 @@ export const useAppNavigation = () => {
 	};
 
 	const goToALoop = async (loopAddress) => {
-		//	await setLoopAddress(loopAddress);
 		navigate(`/loops/${loopAddress}`);
 	};
 	const goToMyItems = (loopAddress) => {

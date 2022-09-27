@@ -1,24 +1,18 @@
 import { PageContainer } from "../../style";
 import {
-	Card,
-	Filter,
 	Flexbox,
 	IconButton,
 	Line,
 	MentionTag,
 	Typography,
 	Button,
-	Slider,
 	Graph,
 	Legend,
-	Banner,
-	ButtonVote,
 } from "rainbows-ui";
 import { UNIT_TOKEN, ZERO_ADDRESS } from "../../../../constants/constants";
 import { tokenValueTxt } from "../../../../helpers/formatters";
 import { useContext, useMemo, useState } from "react";
 import { LoopContext } from "../../../../providers/LoopContextProvider";
-import { calcTotalBudget } from "../../../../helpers/calculs";
 import { useParams } from "react-router";
 import { useAppNavigation } from "../../../../hooks/useAppNavigation";
 import rainbowsTheme from "rainbows-ui/ThemeProvider/styles";
@@ -32,7 +26,6 @@ import { BannerQueueProposal } from "../../../../components/core/banners/QueuePl
 
 import { BannerExecuteProposal } from "../../../../components/core/banners/ExecutePlan/index";
 import { BannerDelegate } from "../../../../components/core/banners/Delegate/index";
-import { toast } from "react-toastify";
 import { useMoralis } from "react-moralis";
 import { CampaignCard } from "../../../../components/core/Cards/CampaignCard";
 import { useGovernorContract } from "../../../../hooks/Governor/useGovernorContract";

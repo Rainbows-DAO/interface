@@ -1,7 +1,5 @@
-import { Button, ButtonVote, Flexbox } from "rainbows-ui";
-import { useContext, useState } from "react";
+import { useContext} from "react";
 import { BannerStyle } from "../style";
-import { toast } from "react-toastify";
 import { useActionContract } from "../../../../hooks/Action/useActionContract";
 import { LoopContext } from "../../../../providers/LoopContextProvider";
 import { unitValueTxt } from "../../../../helpers/formatters";

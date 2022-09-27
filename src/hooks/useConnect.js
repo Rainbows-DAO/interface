@@ -4,17 +4,7 @@ import { toast } from "react-toastify";
 import { useNavigate } from "react-router";
 export const useConnect = () => {
 	const navigate = useNavigate();
-	const {
-		authenticate,
-		logout,
-		isAuthenticated,
-		user,
-		account,
-		chainId,
-		authError,
-		isAuthenticating,
-		Moralis,
-	} = useMoralis();
+	const { authenticate, logout, user, Moralis } = useMoralis();
 
 	const login = async () => {
 		const notif = toast.loading("Connecting...");

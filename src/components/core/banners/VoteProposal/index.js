@@ -1,4 +1,4 @@
-import { Button, ButtonVote, Flexbox } from "rainbows-ui";
+import {  ButtonVote, Flexbox } from "rainbows-ui";
 import { useContext, useState } from "react";
 import { BannerStyle } from "../style";
 import { toast } from "react-toastify";

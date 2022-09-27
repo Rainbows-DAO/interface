@@ -1,11 +1,7 @@
 import { PageContainer } from "../../style";
-import { Card, Filter, Flexbox, Typography } from "rainbows-ui";
-import { UNIT_TOKEN } from "../../../../constants/constants";
-import { tokenValueTxt } from "../../../../helpers/formatters";
+import {   Flexbox, Typography } from "rainbows-ui";
 import { useContext, useMemo } from "react";
 import { LoopContext } from "../../../../providers/LoopContextProvider";
-import { calcTotalBudget } from "../../../../helpers/calculs";
-import { useAppNavigation } from "../../../../hooks/useAppNavigation";
 import { ProposalCard } from "../../../../components/core/Cards/ProposalCard";
 import { useMoralis } from "react-moralis";
 export const MyProposal = () => {

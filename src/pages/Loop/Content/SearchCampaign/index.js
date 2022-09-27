@@ -1,11 +1,7 @@
 import { PageContainer } from "../../style";
-import { Card, Filter, Flexbox, Typography } from "rainbows-ui";
-import { UNIT_TOKEN } from "../../../../constants/constants";
-import { tokenValueTxt } from "../../../../helpers/formatters";
-import { useContext, useMemo, useState } from "react";
+import {   Flexbox, Typography } from "rainbows-ui";
+import { useContext,  useState } from "react";
 import { LoopContext } from "../../../../providers/LoopContextProvider";
-import { calcTotalBudget } from "../../../../helpers/calculs";
-import { useAppNavigation } from "../../../../hooks/useAppNavigation";
 import { CampaignCard } from "../../../../components/core/Cards/CampaignCard";
 import { Pagination } from "@mui/material";
 export const SearchCampaign = () => {

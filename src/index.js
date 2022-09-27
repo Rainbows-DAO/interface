@@ -7,7 +7,6 @@ import { MoralisProvider } from "react-moralis";
 
 import { ThemeProvider } from "rainbows-ui";
 import rainbowsTheme from "rainbows-ui/ThemeProvider/styles";
-import { AppStyles } from "./style/AppStyles";
 
 import { UserContextProvider } from "./providers/UserContextProvider";
 import { LoopContextProvider } from "./providers/LoopContextProvider";

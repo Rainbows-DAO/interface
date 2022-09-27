@@ -1,4 +1,4 @@
-import { Flexbox, Line, SeparationLine, Typography, Link } from "rainbows-ui";
+import { Flexbox,  SeparationLine, Typography, Link } from "rainbows-ui";
 import { useContext } from "react";
 import { useMoralis } from "react-moralis";
 import styled from "styled-components";
@@ -60,10 +60,3 @@ const Container = styled.div`
 	margin-right: 10rem;
 `;
 
-const LineStyle = styled(Line)`
-	position: absolute;
-	width: 100rem;
-	margin-left: 0px;
-	margin-right: 0px;
-	right: 5rem;
-`;

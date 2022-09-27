@@ -1,5 +1,4 @@
 import {
-	Avatar,
 	Dialog,
 	Typography,
 	ModalContent,
@@ -8,7 +7,6 @@ import {
 	UploadAvatar,
 	CoalitionTag,
 } from "rainbows-ui";
-import { useState } from "react";
 import { useMoralis } from "react-moralis";
 
 export const PersonalInformationModal = ({ isOpen, handleOpen }) => {

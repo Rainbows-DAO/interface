@@ -1,21 +1,9 @@
-import {
-	Button,
-	ButtonVote,
-	Flexbox,
-	Link,
-	TextField,
-	Typography,
-} from "rainbows-ui";
+import { Flexbox, Link, TextField, Typography } from "rainbows-ui";
 import rainbowsTheme from "rainbows-ui/ThemeProvider/styles";
 import { useContext, useState } from "react";
 import { BannerStyle } from "../style";
-import { toast } from "react-toastify";
-import { useProposalPlan } from "../../../../hooks/Loop/useProposalPlan";
 import { LoopContext } from "../../../../providers/LoopContextProvider";
 import styled from "styled-components";
-import { UNIT_TOKEN } from "../../../../constants/constants";
-import { UserContext } from "../../../../providers/UserContextProvider";
-import { useUnitToken } from "../../../../hooks/Unit/useUnitToken";
 
 import { useGovernanceToken } from "../../../../hooks/GovernanceToken/useGovernanceToken";
 import { useMoralis } from "react-moralis";

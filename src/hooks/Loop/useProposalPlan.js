@@ -1,9 +1,7 @@
-import React, { useContext, useEffect, useState } from "react";
+import { useContext } from "react";
 import { useMoralis, useWeb3ExecuteFunction } from "react-moralis";
 import ABI from "../../constants/abi/contracts/Loop.sol/Loop.json";
 import { toast } from "react-toastify";
-import contracts from "../../constants/contractAddresses.json";
-import { UserContext } from "../../providers/UserContextProvider";
 import { LoopContext } from "../../providers/LoopContextProvider";
 import { useCrowdfundContract } from "../../hooks/Crowdfund/useCrowdfundContract";
 import {
@@ -13,7 +11,7 @@ import {
 } from "../../constants/ToastMessage";
 
 export const useProposalPlan = (loopAddress) => {
-	const { chainId, Moralis, enableWeb3, user } = useMoralis();
+	const { Moralis, user } = useMoralis();
 	const { loop, campaigns } = useContext(LoopContext);
 	const { getCampaign } = useCrowdfundContract(loop?.fundraiser);
 	const { fetch } = useWeb3ExecuteFunction();

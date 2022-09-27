@@ -1,15 +1,13 @@
 import { PageContainer } from "../../style";
-import { Card, Filter, Flexbox, Typography } from "rainbows-ui";
+import { Card , Flexbox, Typography } from "rainbows-ui";
 import { UNIT_TOKEN } from "../../../../constants/constants";
 import { tokenValueTxt } from "../../../../helpers/formatters";
 import { useContext, useMemo } from "react";
 import { LoopContext } from "../../../../providers/LoopContextProvider";
 import { calcTotalBudget } from "../../../../helpers/calculs";
 import { getShortWallet } from "../../../../helpers/shortWallet";
-import { useMoralis } from "react-moralis";
 import { useAppNavigation } from "../../../../hooks/useAppNavigation";
 export const ItemsDeleted = () => {
-	const { user } = useMoralis();
 	const { items, loop, isItemInPlan } = useContext(LoopContext);
 	const { goToItem } = useAppNavigation();
 

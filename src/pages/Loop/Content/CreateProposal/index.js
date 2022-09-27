@@ -1,21 +1,14 @@
-import { title } from "process";
 import {
 	Button,
-	Card,
-	EmojiPicker,
 	Flexbox,
-	SelectEmoji,
-	Slider,
 	Stepper,
 	TextField,
 	Typography,
 } from "rainbows-ui";
-import { useContext, useMemo, useState } from "react";
-import { useMoralis } from "react-moralis";
+import { useContext,  useState } from "react";
 import styled from "styled-components";
 import { LoopContext } from "../../../../providers/LoopContextProvider";
 import { FormContainer } from "../../style";
-import { usePlanContract } from "../../../../hooks/Plan/usePlanContract";
 import { ItemCard } from "../../../../components/core/Cards/ItemCard";
 import { tokenValueTxt } from "../../../../helpers/formatters";
 import { useAppNavigation } from "../../../../hooks/useAppNavigation";
@@ -27,8 +20,6 @@ export const CreateProposal = () => {
 	const [step, setStep] = useState(1);
 	const incrStep = () => setStep(step + 1);
 	const decrStep = () => setStep(step - 1);
-	const handleStep = (val) => setStep(val);
-	const { Moralis, user } = useMoralis();
 	const { loop, delegatee, itemsToPropose, totalBudget } =
 		useContext(LoopContext);
 	const { goToCreateItem, goToProposal } = useAppNavigation();
@@ -171,10 +162,6 @@ export const CreateProposal = () => {
 		</FormContainer>
 	);
 };
-
-const EmojiButton = styled(SelectEmoji)`
-	cursor: pointer;
-`;
 
 const SliderStyle = styled.div`
 	&& {

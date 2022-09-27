@@ -1,7 +1,5 @@
-import { title } from "process";
 import {
 	Button,
-	EmojiPicker,
 	Flexbox,
 	Select,
 	SelectEmoji,
@@ -20,17 +18,13 @@ import { useAppNavigation } from "../../../../hooks/useAppNavigation";
 import rainbowsTheme from "rainbows-ui/ThemeProvider/styles";
 
 export const CreateAction = () => {
-	const [isEmojiModal, setIsEmojiModal] = useState(false);
 	const { goToAction } = useAppNavigation();
-	const { Moralis, user } = useMoralis();
+	const {  user } = useMoralis();
 	const {
 		loop,
-		campaigns,
-		proposals,
 		items,
 		claimedCampaignProposal,
 		claimedCampaign,
-		isPlan,
 		actions,
 	} = useContext(LoopContext);
 
@@ -49,7 +43,7 @@ export const CreateAction = () => {
 	const [newAction, setNewAction] = useState(emptyAction);
 
 	const selectedItem = useMemo(() => {
-		let arr = items?.find((item, index) => item?.id === newAction?.itemId);
+		let arr = items?.find((item) => item?.id === newAction?.itemId);
 		return arr;
 	}, [items, newAction?.itemId]);
 
@@ -69,7 +63,6 @@ export const CreateAction = () => {
 		createAction({
 			action: newAction,
 			onSuccess: () => {
-				let index = campaigns?.length;
 				goToAction(loop?.address, newAction?.id);
 			},
 		});

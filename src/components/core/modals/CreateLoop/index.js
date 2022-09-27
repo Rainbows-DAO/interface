@@ -1,9 +1,6 @@
 import {
-	Avatar,
 	Dialog,
-	Typography,
 	ModalContent,
-	ModalSeparator,
 	Flexbox,
 	UploadAvatar,
 	TextFieldCharCount,
@@ -25,7 +22,7 @@ import {
 } from "../../../../constants/ToastMessage";
 import logo from "../../../../assets/svg/logoIcon.svg";
 export const CreateLoopModal = ({ isOpen, handleOpen }) => {
-	const { Moralis, user, chainId, currentUser, isWeb3Enabled, enableWeb3 } =
+	const { Moralis, user, chainId   } =
 		useMoralis();
 	const { saveFile } = useMoralisFile();
 	const { getUserLoops, getNativeBalance } = useContext(UserContext);

@@ -1,12 +1,5 @@
-import { createContext, useEffect, useMemo, useState } from "react";
-import {
-	useNativeBalance,
-	useMoralis,
-	useMoralisSubscription,
-	useMoralisFile,
-} from "react-moralis";
-import { useParams } from "react-router";
-import { toast } from "react-toastify";
+import { createContext, useMemo, useState } from "react";
+import { useMoralis, useMoralisSubscription } from "react-moralis";
 import { useLoopContract } from "../hooks/Loop/useLoopContract";
 import { useGovernanceToken } from "../hooks/GovernanceToken/useGovernanceToken";
 import { useUnitToken } from "../hooks/Unit/useUnitToken";
@@ -14,16 +7,7 @@ import { getCoalitionFromVariant } from "../constants/coalition";
 export const LoopContext = createContext(null);
 
 export const LoopContextProvider = ({ children }) => {
-	const {
-		user,
-		setUserData,
-		isAuthenticated,
-		account,
-		chainId,
-		refetchUserData,
-		Moralis,
-		isInitialized,
-	} = useMoralis();
+	const { isAuthenticated, Moralis } = useMoralis();
 
 	const { getLoopSummaryData } = useLoopContract();
 	const { delegates } = useGovernanceToken();

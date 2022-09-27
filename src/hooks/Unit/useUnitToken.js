@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useState } from "react";
+import { useContext } from "react";
 import { useMoralis, useWeb3ExecuteFunction } from "react-moralis";
 import ABI from "../../constants/abi/contracts/UnitToken.sol/UnitToken.json";
 import { toast } from "react-toastify";
@@ -10,7 +10,7 @@ import {
 	ERROR_MESSAGE,
 } from "../../constants/ToastMessage";
 export const useUnitToken = () => {
-	const { chainId, Moralis, enableWeb3, user } = useMoralis();
+	const { chainId, user } = useMoralis();
 	const { fetch } = useWeb3ExecuteFunction();
 	const { setUnitBalance } = useContext(UserContext);
 	const getUnitBalance = () => {

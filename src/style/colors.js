@@ -1,4 +1,3 @@
-import rainbowsTheme from "rainbows-ui/ThemeProvider/styles";
 const styles = (rainbowsTheme) =>
 	Object.entries(rainbowsTheme.colors).map(
 		([colorName, colorHex]) => `

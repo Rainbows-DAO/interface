@@ -1,4 +1,4 @@
-import { AccountMenu, Typography } from "rainbows-ui";
+import { AccountMenu  } from "rainbows-ui";
 import { NATIVE_TOKEN } from "../../../constants/constants";
 import { UNIT_TOKEN } from "../../../constants/constants";
 import { useMoralis } from "react-moralis";

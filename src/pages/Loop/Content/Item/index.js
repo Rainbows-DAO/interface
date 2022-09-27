@@ -1,19 +1,14 @@
 import { PageContainer } from "../../style";
 import {
-	Card,
-	Filter,
 	Flexbox,
 	IconButton,
 	Line,
 	MentionTag,
 	Typography,
-	Button,
 } from "rainbows-ui";
-import { UNIT_TOKEN } from "../../../../constants/constants";
-import { tokenValueTxt, unitValueTxt } from "../../../../helpers/formatters";
+import {  unitValueTxt } from "../../../../helpers/formatters";
 import { useContext, useMemo, useState } from "react";
 import { LoopContext } from "../../../../providers/LoopContextProvider";
-import { calcTotalBudget } from "../../../../helpers/calculs";
 import { useParams } from "react-router";
 import { useAppNavigation } from "../../../../hooks/useAppNavigation";
 import rainbowsTheme from "rainbows-ui/ThemeProvider/styles";
@@ -203,8 +198,6 @@ export const Item = () => {
 		</>
 	);
 };
-
-const MoneyZone = ({ value }) => {};
 
 const RedTypo = styled(Typography)`
 	color: ${() => rainbowsTheme.colors.redOctober50};

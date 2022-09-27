@@ -1,14 +1,12 @@
 import { MetaSideBarLayout } from "../../components/layout/MetaSideBarLayout/index";
 import { Flexbox, Card, Typography, Avatar } from "rainbows-ui";
-import { useContext, useEffect, useState } from "react";
+import { useContext,  useState } from "react";
 import { LineMenu, LoopsDiv } from "./style";
 import { Pagination } from "@mui/material";
-import { useMoralis, useMoralisSubscription } from "react-moralis";
 import { getCoalitionFromVariant } from "../../constants/coalition";
 import { useAppNavigation } from "../../hooks/useAppNavigation";
 import { UserContext } from "../../providers/UserContextProvider";
 export const Loops = () => {
-	const { Moralis, user } = useMoralis();
 	const [page, setPage] = useState(1);
 	const { goToALoop } = useAppNavigation();
 	const { loops, isUserMember } = useContext(UserContext);

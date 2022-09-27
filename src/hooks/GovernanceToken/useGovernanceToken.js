@@ -1,16 +1,13 @@
-import React, { useContext, useEffect, useState } from "react";
 import { useMoralis, useWeb3ExecuteFunction } from "react-moralis";
 import ABI from "../../constants/abi/contracts/GovernanceToken.sol/GovernanceToken.json";
 import { toast } from "react-toastify";
-import contracts from "../../constants/contractAddresses.json";
-import { UserContext } from "../../providers/UserContextProvider";
 import {
 	PENDING_MESSAGE,
 	SUCCESS_MESSAGE,
 	ERROR_MESSAGE,
 } from "../../constants/ToastMessage";
 export const useGovernanceToken = () => {
-	const { chainId, Moralis, enableWeb3, user } = useMoralis();
+	const {  user } = useMoralis();
 	const { fetch } = useWeb3ExecuteFunction();
 
 	const delegates = async ({ tokenAddress, onSuccess }) => {
