@@ -14,3 +14,8 @@ header .makeStyles-selected-240 {
 	height: 9rem;
 	transform: none;
 }
+
+*::-webkit-scrollbar {
+	display: none;
+	scrollbar-width: none; /* Firefox */
+}

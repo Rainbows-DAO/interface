@@ -1,7 +1,9 @@
 import { TreeItem, TreeView } from "rainbows-ui";
 import { useContext } from "react";
+import { useMoralis } from "react-moralis";
 import { useAppNavigation } from "../../../../hooks/useAppNavigation";
 import { LoopContext } from "../../../../providers/LoopContextProvider";
+import { UserContext } from "../../../../providers/UserContextProvider";
 
 export const DecideTab = () => {
 	const {
@@ -11,17 +13,24 @@ export const DecideTab = () => {
 		goToProposalsRunning,
 		goToProposalEnded,
 	} = useAppNavigation();
-	const { loop } = useContext(LoopContext);
+	const { loop, delegatee, items, proposals } = useContext(LoopContext);
+	const { isUserMember } = useContext(UserContext);
+	const { user } = useMoralis();
 	return (
 		<>
-			<TreeItem
-				data-testid="new-proposal"
-				icon="icon-comment"
-				id="new proposal"
-				label="New proposal"
-				onClick={() => goToNewPlan(loop.address)}
-				mainElement
-			/>
+			{isUserMember(loop?.address) &&
+				delegatee?.toLowerCase() === user?.get("ethAddress")?.toLowerCase() &&
+				items?.filter((item) => item.deleted === false)?.length > 0 &&
+				loop?.state === "PLANNING" && (
+					<TreeItem
+						data-testid="new-proposal"
+						icon="icon-comment"
+						id="new proposal"
+						label="New proposal"
+						onClick={() => goToNewPlan(loop.address)}
+						mainElement
+					/>
+				)}
 			<TreeItem
 				data-testid="find-proposal"
 				icon="icon-plus-outlined"

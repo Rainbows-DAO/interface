@@ -33,19 +33,65 @@ export const useLoopContract = () => {
 	};
 
 	const joinLoop = async ({ loopAddress, onSuccess }) => {
-		await Moralis.Cloud.run("joinLoop", {
-			loopAddress: loopAddress,
-			userAddress: user?.get("ethAddress"),
+		fetch({
+			params: {
+				abi: ABI,
+				contractAddress: loopAddress,
+				functionName: "join",
+			},
+			onError: (err) => {
+				toast.error(err?.data?.message);
+			},
+			onSuccess: (tx) => {
+				console.log(tx);
+				toast.promise(
+					tx?.wait().then(async (final) => {
+						await Moralis.Cloud.run("joinLoop", {
+							loopAddress: loopAddress,
+							userAddress: user?.get("ethAddress"),
+						});
+						onSuccess();
+					}),
+
+					{
+						pending: PENDING_MESSAGE(tx),
+						success: SUCCESS_MESSAGE.joinLoop,
+						error: ERROR_MESSAGE,
+					}
+				);
+			},
 		});
-		onSuccess();
 	};
 
 	const leaveLoop = async ({ loopAddress, onSuccess }) => {
-		await Moralis.Cloud.run("leaveLoop", {
-			loopAddress: loopAddress,
-			userAddress: user?.get("ethAddress"),
+		fetch({
+			params: {
+				abi: ABI,
+				contractAddress: loopAddress,
+				functionName: "leave",
+			},
+			onError: (err) => {
+				toast.error(err?.data?.message);
+			},
+			onSuccess: (tx) => {
+				console.log(tx);
+				toast.promise(
+					tx?.wait().then(async (final) => {
+						await Moralis.Cloud.run("leaveLoop", {
+							loopAddress: loopAddress,
+							userAddress: user?.get("ethAddress"),
+						});
+						onSuccess();
+					}),
+
+					{
+						pending: PENDING_MESSAGE(tx),
+						success: SUCCESS_MESSAGE.leaveLoop,
+						error: ERROR_MESSAGE,
+					}
+				);
+			},
 		});
-		onSuccess();
 	};
 
 	return { getLoopSummaryData, leaveLoop, joinLoop };

@@ -6,6 +6,7 @@ import logo from "../../../assets/svg/logoIcon.svg";
 import { CreateLoopModal } from "../../core/modals/CreateLoop/index";
 import { useAppNavigation } from "../../../hooks/useAppNavigation";
 import { UserContext } from "../../../providers/UserContextProvider";
+import { useParams } from "react-router";
 export const SideBar = () => {
 	const { user, Moralis } = useMoralis();
 	const [isCreateLoopModal, setIsCreateLoopModal] = useState(false);
@@ -13,6 +14,12 @@ export const SideBar = () => {
 	const { goToLoops, goToALoop } = useAppNavigation();
 
 	const { userLoop } = useContext(UserContext);
+	const params = useParams();
+	const [selected, setSelected] = useState(params?.loopAddress?.toLowerCase());
+
+	useEffect(() => {
+		console.log(selected);
+	}, [params, selected]);
 
 	return (
 		<>
@@ -21,16 +28,25 @@ export const SideBar = () => {
 				content={userLoop?.map((loop, index) => {
 					return {
 						color: "#000000",
-						id: `loop-${index}`,
+						id: loop?.address?.toLowerCase(),
 						name: loop?.title,
 						logo: loop?.avatar !== undefined && loop?.avatar,
-						onClick: () => goToALoop(loop?.address),
+						onClick: (event, item) => {
+							setSelected(loop?.address?.toLowerCase());
+							goToALoop(loop?.address);
+						},
 					};
 				})}
 				createLoop={{
 					id: "create-loop",
 					name: "Create a loop",
-					onClick: () => handleCreateModal(),
+					onClick: (a, b) => {
+						setSelected("create-loop");
+						handleCreateModal();
+
+						console.log(33);
+					},
+					disabled: false,
 				}}
 				logo={
 					<AvatarLogo
@@ -44,12 +60,21 @@ export const SideBar = () => {
 				searchButton={{
 					id: "discover",
 					name: "Discover",
-					onClick: () => goToLoops(),
+					onClick: () => {
+						setSelected("discover");
+						goToLoops();
+					},
 				}}
+				selected={selected}
 			/>
 			<CreateLoopModal
 				isOpen={isCreateLoopModal}
-				handleOpen={handleCreateModal}
+				handleOpen={() => {
+					if (isCreateLoopModal) {
+						setSelected(params?.loopAddress?.toLowerCase());
+					}
+					handleCreateModal();
+				}}
 			/>
 		</>
 	);

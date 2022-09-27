@@ -7,14 +7,18 @@ import { LoopContext } from "../../../../providers/LoopContextProvider";
 import { calcTotalBudget } from "../../../../helpers/calculs";
 import { useAppNavigation } from "../../../../hooks/useAppNavigation";
 export const SearchItem = () => {
-	const { items, loop, totalBudget } = useContext(LoopContext);
+	const { items, loop, totalBudget, claimedCampaignProposal } =
+		useContext(LoopContext);
 
 	const { goToItem } = useAppNavigation();
 
 	const existingItem = useMemo(() => {
-		let arr = items?.filter((el, index) => el.deleted !== true);
+		let arr = [];
+		if (loop?.state !== "IMPLEMENTING")
+			arr = items?.filter((el) => el.deleted !== true);
+		else arr = claimedCampaignProposal?.plan;
 		return arr;
-	}, [items]);
+	}, [items, claimedCampaignProposal, loop?.state]);
 
 	return (
 		<PageContainer>
@@ -38,57 +42,6 @@ export const SearchItem = () => {
 					</strong>
 					{" Budget"}
 				</Typography>
-				<Filter
-					checkBoxItems={[
-						{
-							checked: true,
-							"data-testid": "option-checkbox-1",
-							label: "Option 1",
-							name: "item-1",
-							value: "1",
-						},
-						{
-							checked: true,
-							"data-testid": "option-checkbox-2",
-							label: "Option 2",
-							name: "item-2",
-							value: "2",
-						},
-						{
-							checked: true,
-							"data-testid": "option-checkbox-3",
-							label: "Option 3",
-							name: "item-3",
-							value: "3",
-						},
-					]}
-					data-testid="example-filter"
-					onCheckboxSelectionChange={function noRefCheck() {}}
-					onSelect={function noRefCheck() {}}
-					optionsTitle="Causes"
-					preselected="item-1"
-					resetTitle="Clear all"
-					selected="item-1"
-					selectorItems={[
-						{
-							"data-testid": "item-1",
-							label: "Item 1",
-							value: "item-1",
-						},
-						{
-							"data-testid": "item-2",
-							label: "Item 2",
-							value: "item-2",
-						},
-						{
-							"data-testid": "item-3",
-							label: "Item 3",
-							value: "item-3",
-						},
-					]}
-					statusTitle="Filter title"
-					title="Filter"
-				/>
 			</Flexbox>
 			<Flexbox
 				display="flex"

@@ -25,7 +25,14 @@ import { useAppNavigation } from "../../../hooks/useAppNavigation";
 const rand = Math.floor(Math.random() * (PERSONALITIES_COLOR.length - 1));
 
 export const Edit = () => {
-	const { user, account, isAuthenticated, chainId, setUserData } = useMoralis();
+	const {
+		user,
+		account,
+		isAuthenticated,
+		chainId,
+		setUserData,
+		refetchUserData,
+	} = useMoralis();
 	const { goToLoops } = useAppNavigation();
 	const navigate = useNavigate();
 	const { editAvatar, editUsername } = useContext(UserContext);
@@ -80,7 +87,7 @@ export const Edit = () => {
 	return (
 		<>
 			{" "}
-			<Header>
+			<Header style={{ paddingRight: "1rem" }}>
 				<div />
 				<AvatarButton />
 			</Header>
@@ -180,7 +187,7 @@ export const Edit = () => {
 									</Typography>
 									<TextField
 										type="number"
-										value={user?.get("birthYear")}
+										value={birthYear}
 										label="Birth Year"
 										error={!isValidBirthYear()}
 										valid={isValidBirthYear()}
@@ -276,6 +283,7 @@ export const Edit = () => {
 												email: email,
 											});
 											setStep(2);
+											refetchUserData();
 										}}
 									>
 										{"Next >"}

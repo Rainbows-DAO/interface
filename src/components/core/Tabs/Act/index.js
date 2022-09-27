@@ -2,26 +2,29 @@ import { TreeItem, TreeView } from "rainbows-ui";
 import { useContext } from "react";
 import { LoopContext } from "../../../../providers/LoopContextProvider";
 import { useAppNavigation } from "../../../../hooks/useAppNavigation";
+import { UserContext } from "../../../../providers/UserContextProvider";
 
 export const ActTab = () => {
-	const { loop } = useContext(LoopContext);
 	const {
 		goToCreateAction,
 		goToSearchAction,
 		goToMyAction,
 		goToApprovedAction,
 	} = useAppNavigation();
+	const { loop } = useContext(LoopContext);
+	const { isUserMember } = useContext(UserContext);
 	return (
 		<>
-			<TreeItem
-				data-testid="create-action"
-				id="create-action"
-				label="Create an action"
-				mainElement
-				emoji="➕"
-				onClick={() => goToCreateAction(loop?.address)}
-			/>
-
+			{isUserMember(loop?.address) && (
+				<TreeItem
+					data-testid="create-action"
+					id="create-action"
+					label="Create an action"
+					mainElement
+					emoji="➕"
+					onClick={() => goToCreateAction(loop?.address)}
+				/>
+			)}
 			<TreeItem
 				data-testid="find-action"
 				id="find-action"

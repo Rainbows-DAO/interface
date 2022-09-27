@@ -11,7 +11,6 @@ export const Toaster = styled(ToastContainer)`
 		border-radius: 1rem;
 		padding: 2rem;
 		color: ${rainbowsTheme.colors.white};
-		word-break: break-all;
 		margin-right: 2rem;
 	}
 	.Toastify__toast-icon--info {

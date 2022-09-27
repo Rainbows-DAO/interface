@@ -109,6 +109,10 @@ export const useAppNavigation = () => {
 		navigate(`/loops/${loopAddress}/my-actions`);
 	};
 
+	const goToAction = (loopAddress, actionId) => {
+		navigate(`/loops/${loopAddress}/actions/${actionId}`);
+	};
+
 	return {
 		goBack,
 		goToEditProfile,
@@ -136,5 +140,6 @@ export const useAppNavigation = () => {
 		goToMyAction,
 		goToApprovedAction,
 		goToCreateAction,
+		goToAction,
 	};
 };

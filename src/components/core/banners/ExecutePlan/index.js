@@ -4,13 +4,21 @@ import { BannerStyle } from "../style";
 import { toast } from "react-toastify";
 import { useProposalPlan } from "../../../../hooks/Loop/useProposalPlan";
 import { LoopContext } from "../../../../providers/LoopContextProvider";
+import { useAppNavigation } from "../../../../hooks/useAppNavigation";
 export const BannerExecuteProposal = ({ proposalId }) => {
-	const { loop } = useContext(LoopContext);
+	const { loop, updateLoopState } = useContext(LoopContext);
+	const { goToCampaign } = useAppNavigation();
 
 	const { executeProposal } = useProposalPlan(loop?.address);
 
 	const onClickExecute = () => {
-		executeProposal({ proposalId: proposalId, onSuccess: () => {} });
+		executeProposal({
+			proposalId: proposalId,
+			onSuccess: (newid) => {
+				updateLoopState(loop?.address);
+				goToCampaign(loop?.address, newid);
+			},
+		});
 	};
 
 	return (
@@ -26,7 +34,7 @@ export const BannerExecuteProposal = ({ proposalId }) => {
 				},
 			]}
 			content={
-				"By  executing a proposal, you validate the items and create a new caimpaign to raise funds in order execute the plan!"
+				"By  executing this proposal, you validate the items and create a new fundraising campaign with the scope of executing the plan!"
 			}
 		/>
 	);

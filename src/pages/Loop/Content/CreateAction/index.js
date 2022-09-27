@@ -13,54 +13,239 @@ import { useMoralis } from "react-moralis";
 import styled from "styled-components";
 import { LoopContext } from "../../../../providers/LoopContextProvider";
 import { FormContainer } from "../../style";
-import { usePlanContract } from "../../../../hooks/Plan/usePlanContract";
+import { UNIT_TOKEN } from "../../../../constants/constants";
+import { unitValueTxt } from "../../../../helpers/formatters";
+import { useActionContract } from "../../../../hooks/Action/useActionContract";
+import { useAppNavigation } from "../../../../hooks/useAppNavigation";
+import rainbowsTheme from "rainbows-ui/ThemeProvider/styles";
 
 export const CreateAction = () => {
 	const [isEmojiModal, setIsEmojiModal] = useState(false);
+	const { goToAction } = useAppNavigation();
 	const { Moralis, user } = useMoralis();
-	const { loop, campaigns, proposals } = useContext(LoopContext);
+	const {
+		loop,
+		campaigns,
+		proposals,
+		items,
+		claimedCampaignProposal,
+		claimedCampaign,
+		isPlan,
+		actions,
+	} = useContext(LoopContext);
 
-	const emptyItem = {
-		id: 0,
+	const emptyAction = {
+		itemId: "",
 		title: "",
-		description: "",
-		budget: 0,
-		emoji: "🎸",
+		payee: "",
+		cost: 0,
+		emoji: "📝",
+		loop: loop?.address,
+		campaignId: claimedCampaign?.id,
+		createdBy: user?.get("ethAddress"),
+		id: actions?.length + 1,
 	};
 
-	const itemsInPlan = useMemo(() => {
-		let elem = campaigns?.find((campaign, index) => campaign?.claimed === true);
-		console.log(elem);
-		let arr = proposals?.find(
-			(proposal, index) => proposal?.id === elem?.proposalId
-		);
-		return arr?.plan;
-	}, [campaigns, proposals]);
+	const [newAction, setNewAction] = useState(emptyAction);
 
-	const [newItem, setNewItem] = useState(emptyItem);
-	const { createItem } = usePlanContract(loop?.address, loop?.plan);
+	const selectedItem = useMemo(() => {
+		let arr = items?.find((item, index) => item?.id === newAction?.itemId);
+		return arr;
+	}, [items, newAction?.itemId]);
 
-	const onCreateItem = async () => {
-		createItem({ item: newItem, onSuccess: () => {} });
+	const { createAction } = useActionContract(loop?.actions);
+
+	const spent = useMemo(() => {
+		let res = 0;
+		for (let i = 0; i < actions?.length; i++) {
+			if (actions[i]?.paid && actions[i]?.itemId === selectedItem?.id) {
+				res += actions[i]?.cost;
+			}
+		}
+		return res;
+	}, [actions, selectedItem]);
+
+	const onCreateAction = async () => {
+		createAction({
+			action: newAction,
+			onSuccess: () => {
+				let index = campaigns?.length;
+				goToAction(loop?.address, newAction?.id);
+			},
+		});
 	};
+
+	function isValidItem() {
+		return newAction?.itemId !== "";
+	}
 
 	function isValidTitle() {
-		return newItem.title?.length > 0;
+		return newAction.title?.length > 0;
 	}
 
-	function isValidDescription() {
-		return newItem.description?.length > 0;
+	function isValidPayee() {
+		return newAction.payee?.length > 0;
 	}
-	function isValidBudgeet() {
-		return newItem.budget !== null && newItem.budget >= 0;
+	function isValidCost() {
+		return newAction.cost !== null && newAction.cost >= 0;
 	}
 
 	function isValidEmoji() {
-		return newItem.emoji?.length > 0;
+		return newAction.emoji?.length > 0;
 	}
 	return (
 		<FormContainer>
-			<div>
+			{claimedCampaignProposal?.plan?.length > 0 ? (
+				<div>
+					<Flexbox
+						display="flex"
+						flexDirection="row"
+						justifyContent="space-between"
+						style={{ width: "100%" }}
+					>
+						<Typography weight="extraBold" variant="subtitleM">
+							Let's create a new action!{" "}
+						</Typography>
+						<div />
+					</Flexbox>
+					<br />
+					<Select
+						data-testid="select"
+						icon="icon-search"
+						items={claimedCampaignProposal?.plan?.map((item, index) => {
+							return {
+								content: item?.emoji + " " + item?.title,
+								"data-testid": item?.id,
+							};
+						})}
+						onChange={(event, value) => {
+							console.log(claimedCampaignProposal);
+							setNewAction({
+								...newAction,
+								itemId: value?.props?.["data-testid"],
+							});
+						}}
+						label="Related Item"
+					/>
+					<br />
+					<Flexbox
+						display="flex"
+						justifyContent="space-between"
+						alignItems="center"
+						style={{ width: "100%" }}
+					>
+						{selectedItem && (
+							<>
+								<Flexbox
+									display="flex"
+									flexDirection="column"
+									alignItems="center"
+									justifyContent="center"
+								>
+									<Typography variant="subtitleM">
+										{unitValueTxt(selectedItem?.budget)}
+									</Typography>
+									<Typography variant="bodyM" weight="bold">
+										financed
+									</Typography>
+								</Flexbox>
+								<Flexbox
+									display="flex"
+									flexDirection="column"
+									alignItems="center"
+									justifyContent="center"
+								>
+									<RedText variant="subtitleM">{unitValueTxt(spent)}</RedText>
+									<RedText variant="bodyM" weight="bold">
+										spent
+									</RedText>
+								</Flexbox>
+
+								<Flexbox
+									display="flex"
+									flexDirection="column"
+									alignItems="center"
+									justifyContent="center"
+								>
+									<GreenText variant="subtitleM">
+										{unitValueTxt(selectedItem?.budget - spent)}
+									</GreenText>
+									<GreenText variant="bodyM" weight="bold">
+										remaining
+									</GreenText>
+								</Flexbox>
+							</>
+						)}
+					</Flexbox>
+					<br />
+					<Flexbox
+						display="flex"
+						flexDirection="row"
+						alignItems="center"
+						justifyContent="space-between"
+						style={{ gap: 25, width: "100%" }}
+					>
+						<EmojiButton
+							emoji={newAction?.emoji}
+							onChange={(emoji) => setNewAction({ ...newAction, emoji: emoji })}
+						>
+							<p>okok</p>
+						</EmojiButton>
+						<TextField
+							id="form-new-action"
+							label="Title"
+							placeholder="Exemple: Print 1000 flyers"
+							variant="placeholder"
+							onChange={(event) =>
+								setNewAction({ ...newAction, title: event?.target?.value })
+							}
+						/>
+					</Flexbox>
+					<TextField
+						onChange={(event) =>
+							setNewAction({ ...newAction, payee: event?.target?.value })
+						}
+						id="payee"
+						label="Payee wallet address"
+					/>
+					<TextField
+						id="standard-number"
+						inputLabelProps={{
+							shrink: true,
+						}}
+						label={`Cost in ${UNIT_TOKEN?.ticker}`}
+						max={100000000000000}
+						valid={isValidCost()}
+						min={0}
+						type="number"
+						onChange={(event) =>
+							setNewAction({ ...newAction, cost: event?.target?.valueAsNumber })
+						}
+					/>
+					<Flexbox
+						display="flex"
+						flexDirection="row"
+						alignItems="center"
+						justifyContent="space-between"
+						style={{ gap: 25, width: "100%" }}
+					>
+						<div />
+						<Button
+							color="primary"
+							disabled={
+								!isValidEmoji() ||
+								!isValidTitle() ||
+								!isValidCost() ||
+								!isValidPayee() ||
+								!isValidItem()
+							}
+							onClick={() => onCreateAction()}
+						>
+							Create
+						</Button>
+					</Flexbox>
+				</div>
+			) : (
 				<Flexbox
 					display="flex"
 					flexDirection="row"
@@ -68,95 +253,23 @@ export const CreateAction = () => {
 					style={{ width: "100%" }}
 				>
 					<Typography weight="extraBold" variant="subtitleM">
-						Let's create a new action!{" "}
+						No plan has been approved yet!{" "}
 					</Typography>
 					<div />
 				</Flexbox>
-				<br />
-				<Select
-					data-testid="select"
-					error
-					icon="icon-search"
-					items={itemsInPlan?.map((elem) => {
-						return {
-							content: elem?.emoji + " " + elem?.title,
-							"data-testid": "some-test-id",
-						};
-					})}
-					label="Related Item"
-				/>
-
-				<Flexbox
-					display="flex"
-					flexDirection="row"
-					alignItems="center"
-					justifyContent="space-between"
-					style={{ gap: 25, width: "100%" }}
-				>
-					<EmojiButton
-						emoji={newItem.emoji}
-						onChange={(emoji) => setNewItem({ ...newItem, emoji: emoji })}
-					>
-						<p>okok</p>
-					</EmojiButton>
-					<TextField
-						id="form-new-item"
-						label="Title"
-						placeholder="Exemple: Print 1000 flyers"
-						variant="placeholder"
-						onChange={(event) =>
-							setNewItem({ ...newItem, title: event?.target?.value })
-						}
-					/>
-				</Flexbox>
-
-				<TextField
-					onChange={(event) =>
-						setNewItem({ ...newItem, description: event?.target?.value })
-					}
-					id="description"
-					label="Payee wallet address"
-				/>
-				<TextField
-					id="standard-number"
-					inputLabelProps={{
-						shrink: true,
-					}}
-					label="Cost"
-					max={100000000000000}
-					valid={isValidBudgeet()}
-					min={0}
-					type="number"
-					onChange={(event) =>
-						setNewItem({ ...newItem, budget: event?.target?.valueAsNumber })
-					}
-				/>
-				<Flexbox
-					display="flex"
-					flexDirection="row"
-					alignItems="center"
-					justifyContent="space-between"
-					style={{ gap: 25, width: "100%" }}
-				>
-					<div />
-					<Button
-						color="primary"
-						disabled={
-							!isValidEmoji() ||
-							!isValidTitle() ||
-							!isValidBudgeet() ||
-							!isValidDescription()
-						}
-						onClick={() => onCreateItem()}
-					>
-						Create
-					</Button>
-				</Flexbox>
-			</div>
+			)}{" "}
 		</FormContainer>
 	);
 };
 
 const EmojiButton = styled(SelectEmoji)`
 	cursor: pointer;
+`;
+
+const GreenText = styled(Typography)`
+	color: ${rainbowsTheme.colors.superGreen};
+`;
+
+const RedText = styled(Typography)`
+	color: ${rainbowsTheme.colors.redOctober50};
 `;

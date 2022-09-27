@@ -14,12 +14,13 @@ import {
 	TreeItem,
 	TreeView,
 	Banner,
+	Typography,
 } from "rainbows-ui";
 import styled from "styled-components";
 import { SideBar } from "../Sidebar/index";
 import { AvatarButton } from "../../core/AvatarButton/index";
 import { LOOP_STATE, getStateFromName } from "../../../constants/loopState";
-import { useContext, useState } from "react";
+import { useContext, useMemo, useState } from "react";
 import { PlanifyTab } from "../../core/Tabs/Planify/index";
 
 import { DecideTab } from "../../core/Tabs/Decide/index";
@@ -27,20 +28,128 @@ import { PledgeTab } from "../../core/Tabs/Pledge/index";
 import { ActTab } from "../../core/Tabs/Act/index";
 import { useAppNavigation } from "../../../hooks/useAppNavigation";
 import { LoopContext } from "../../../providers/LoopContextProvider";
-export const LoopLayout = ({
-	children,
-	loopTitle,
-	state,
-	page,
-	isBanner = false,
-	bannerContent = <div />,
-	bannerHeight = 10,
-	bannerButtons = [],
-}) => {
+import { getShortWallet } from "../../../helpers/shortWallet";
+export const LoopLayout = ({ children, loopTitle, state, page, banner }) => {
 	const [query, setQuery] = useState("");
 	const [tab, setTab] = useState("tab-1");
-	const { goToLoopInfo } = useAppNavigation();
-	const { loop } = useContext(LoopContext);
+	const { goToLoopInfo, goToAction, goToItem, goToProposal, goToCampaign } =
+		useAppNavigation();
+	const { loop, items, campaigns, proposals, actions } =
+		useContext(LoopContext);
+
+	const queryResult = useMemo(() => {
+		let res = {
+			actions: [],
+			items: [],
+			campaigns: [],
+			proposals: [],
+		};
+		res.actions = actions?.filter(
+			(action) =>
+				action?.title?.toLowerCase()?.includes(query) ||
+				action?.itemId?.toLowerCase()?.includes(query) ||
+				action?.id?.toString().includes(query)
+		);
+		res.items = items?.filter(
+			(item) =>
+				item?.title?.toLowerCase()?.includes(query) ||
+				item?.id?.toString()?.toLowerCase()?.includes(query) ||
+				item?.description?.toLowerCase()?.includes(query)
+		);
+		res.campaigns = campaigns?.filter(
+			(campaign) =>
+				campaign?.id?.toString()?.includes(query) ||
+				campaign?.proposalId?.toLowerCase()?.includes(query)
+		);
+		res.proposals = proposals?.filter(
+			(proposal) =>
+				proposal?.description?.toLowerCase()?.includes(query) ||
+				proposal?.id?.toLowerCase()?.includes(query)
+		);
+
+		return res;
+	}, [actions, items, proposals, campaigns, query]);
+
+	function isEmpty(array) {
+		return array?.length <= 0;
+	}
+
+	function isQueryEmpty() {
+		if (
+			isEmpty(queryResult?.actions) &&
+			isEmpty(queryResult?.items) &&
+			isEmpty(queryResult?.proposals) &&
+			isEmpty(queryResult?.campaigns)
+		)
+			return true;
+		else return false;
+	}
+
+	const SearchResult = () => {
+		return (
+			<>
+				{queryResult?.actions?.map((action, index) => (
+					<ResultFlexbox
+						key={`actionSearch-${index}`}
+						onClick={() => {
+							setQuery("");
+							goToAction(loop?.address, action?.id);
+						}}
+					>
+						<p>{action.emoji + " " + action?.title}</p>
+						<Typography weight="medium" variant="bodyS">
+							| ACTION
+						</Typography>
+					</ResultFlexbox>
+				))}
+				{queryResult?.items?.map((item, index) => (
+					<ResultFlexbox
+						key={`itemSearch-${index}`}
+						onClick={() => {
+							setQuery("");
+							goToItem(loop?.address, item?.id);
+						}}
+					>
+						<p>{item.emoji + " " + item?.title}</p>
+						<Typography weight="medium" variant="bodyS">
+							| ITEM
+						</Typography>
+					</ResultFlexbox>
+				))}
+
+				{queryResult?.campaigns?.map((campaign, index) => (
+					<ResultFlexbox
+						key={`campaignSearch-${index}`}
+						onClick={() => {
+							setQuery("");
+							goToCampaign(loop?.address, campaign?.id);
+						}}
+					>
+						<p>{campaign?.id}</p>
+						<Typography weight="medium" variant="bodyS">
+							| CAMPAIGN
+						</Typography>
+					</ResultFlexbox>
+				))}
+
+				{queryResult?.proposals?.map((proposal, index) => (
+					<ResultFlexbox
+						key={`proposalSearch-${index}`}
+						onClick={() => {
+							setQuery("");
+							goToProposal(loop?.address, proposal?.id);
+						}}
+					>
+						<p>{getShortWallet(proposal?.id)}</p>
+						<Typography weight="medium" variant="bodyS">
+							| PROPOSAL
+						</Typography>
+					</ResultFlexbox>
+				))}
+			</>
+		);
+	};
+
 	return (
 		<Flexbox
 			display="flex"
@@ -60,15 +169,24 @@ export const LoopLayout = ({
 							/>
 						</Flexbox>
 					}
-					onSearchChange={(event) => setQuery(event?.target.value)}
+					onSearchChange={(event) =>
+						setQuery(event?.target?.value?.toLowerCase())
+					}
 					rightElement={
 						<div style={{ height: "100%", marginLeft: "-17rem" }}>
 							<AvatarButton />
 						</div>
 					}
-					searchPlaceholder="Accéder à..."
-					searchResults="x results found for ..."
+					searchPlaceholder={"Search in " + loop?.title}
+					searchResults={
+						isQueryEmpty() ? (
+							<p> {`No result matching with "${query}"`}</p>
+						) : (
+							<SearchResult />
+						)
+					}
 					searchValue={query}
+					resultsOpen={query?.length >= 1 && query !== ""}
 				/>
 				<CoreFlex>
 					<MenuLoop>
@@ -86,19 +204,19 @@ export const LoopLayout = ({
 										{
 											"data-testid": "tab-2",
 											label: "Decide",
-											notif: true,
+											notif: false,
 											value: "tab-2",
 										},
 										{
 											"data-testid": "tab-2",
 											label: "Pledge",
-											notif: true,
+											notif: false,
 											value: "tab-3",
 										},
 										{
 											"data-testid": "tab-2",
 											label: "Act",
-											notif: true,
+											notif: false,
 											value: "tab-4",
 										},
 										{
@@ -146,14 +264,10 @@ export const LoopLayout = ({
 							</TabContext>
 						</InnerMenuLoop>
 					</MenuLoop>
-					{isBanner ? (
-						<PageZoneWithBanner height={isBanner ? bannerHeight : ""}>
-							{children}
-							<BannerStyle content={bannerContent} buttons={bannerButtons} />
-						</PageZoneWithBanner>
-					) : (
-						<PageZone>{children}</PageZone>
-					)}{" "}
+					<PageZone style={{ paddingBottom: banner?.height }}>
+						{children}
+						{banner?.content}
+					</PageZone>
 				</CoreFlex>
 			</FlexCalcWidth>
 		</Flexbox>
@@ -182,6 +296,15 @@ const TabElement = ({ tabValue, onNodeSelect, children }) => {
 		</TabPanelStyle>
 	);
 };
+
+const ResultFlexbox = styled.div`
+	width: 100%;
+	display: flex;
+	align-items: center;
+	justify-content: flex-start;
+	gap: 1rem;
+	cursor: pointer;
+`;
 
 const FlexCalcWidth = styled(Flexbox)`
 	width: calc(100% - 8rem);
@@ -243,10 +366,6 @@ const PageZone = styled.div`
 	align-items: center;
 	flex-direction: column;
 	justify-content: flex-start;
-`;
-
-const PageZoneWithBanner = styled(PageZone)`
-	padding-bottom: ${(props) => `${props.height}rem`};
 `;
 
 const BannerStyle = styled(Banner)`

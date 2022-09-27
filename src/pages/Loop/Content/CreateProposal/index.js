@@ -21,7 +21,7 @@ import { tokenValueTxt } from "../../../../helpers/formatters";
 import { useAppNavigation } from "../../../../hooks/useAppNavigation";
 import { useProposalPlan } from "../../../../hooks/Loop/useProposalPlan";
 
-import { UNIT_TOKEN } from "../../../../constants/constants";
+import { UNIT_TOKEN, ZERO_ADDRESS } from "../../../../constants/constants";
 
 export const CreateProposal = () => {
 	const [step, setStep] = useState(1);
@@ -29,8 +29,9 @@ export const CreateProposal = () => {
 	const decrStep = () => setStep(step - 1);
 	const handleStep = (val) => setStep(val);
 	const { Moralis, user } = useMoralis();
-	const { loop, itemsToPropose, totalBudget } = useContext(LoopContext);
-	const { goToCreateItem } = useAppNavigation();
+	const { loop, delegatee, itemsToPropose, totalBudget } =
+		useContext(LoopContext);
+	const { goToCreateItem, goToProposal } = useAppNavigation();
 	const { proposePlan } = useProposalPlan(loop?.address);
 
 	let emptyProposal = {
@@ -51,7 +52,7 @@ export const CreateProposal = () => {
 				plan: itemsToPropose,
 				description: newProposal.description,
 				budget: totalBudget[0],
-				onSuccess: () => {},
+				onSuccess: (proposalId) => goToProposal(loop?.address, proposalId),
 			});
 		}
 	}
@@ -144,7 +145,13 @@ export const CreateProposal = () => {
 					)}
 					<Button
 						color="primary"
-						disabled={step === 2 ? !isValidDescription() : false}
+						disabled={
+							step === 1
+								? delegatee === ZERO_ADDRESS
+								: step === 2
+								? !isValidDescription()
+								: false
+						}
 						onClick={() => {
 							if (itemsToPropose?.length === 0) {
 								goToCreateItem(loop?.address);

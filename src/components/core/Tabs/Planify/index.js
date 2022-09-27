@@ -3,23 +3,27 @@ import { useContext } from "react";
 import { useParams } from "react-router";
 import { useAppNavigation } from "../../../../hooks/useAppNavigation";
 import { LoopContext } from "../../../../providers/LoopContextProvider";
+import { UserContext } from "../../../../providers/UserContextProvider";
 
 export const PlanifyTab = () => {
-	const { loop } = useContext(LoopContext);
+	const { loop, items } = useContext(LoopContext);
+	const { isUserMember } = useContext(UserContext);
 	const { goToCreateItem, goToSearchItems, goToMyItems, goToItemsDeleted } =
 		useAppNavigation();
 	return (
 		<>
-			<TreeItem
-				data-testid="simpleTitle"
-				icon="icon-comment"
-				id="first-element"
-				label="Create an item"
-				mainElement
-				onClick={() => {
-					goToCreateItem(loop?.address);
-				}}
-			/>
+			{isUserMember(loop?.address) && loop?.state === "PLANNING" && (
+				<TreeItem
+					data-testid="simpleTitle"
+					icon="icon-comment"
+					id="first-element"
+					label="Create an item"
+					mainElement
+					onClick={() => {
+						goToCreateItem(loop?.address);
+					}}
+				/>
+			)}
 			<TreeItem
 				data-testid="simpleTitle"
 				icon="icon-plus-outlined"

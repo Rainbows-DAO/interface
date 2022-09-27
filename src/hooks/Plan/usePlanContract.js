@@ -40,6 +40,7 @@ export const usePlanContract = (loopAddress, planAddress) => {
 							loopAddress: loopAddress,
 							createdBy: user?.get("ethAddress"),
 						});
+						onSuccess(newItem?.id);
 					}),
 
 					{

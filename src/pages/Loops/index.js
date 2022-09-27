@@ -17,18 +17,20 @@ export const Loops = () => {
 
 	const end = start + 6;
 
+	const [query, setQuery] = useState("");
+
 	function getCurrentLoops() {
-		if (query.length < 5) {
+		if (query.length < 3) {
 			return loops;
 		} else {
-			return loops?.filter((loop, index) => {
-				if (
-					loop?.title?.toLowerCase()?.includes(query.toLowerCase()) ||
-					loop?.address?.toLowerCase()?.includes(query.toLowerCase())
-				) {
-					return loop;
-				} else return [];
-			});
+			let res = [];
+			res = loops?.filter(
+				(loop) =>
+					loop?.title?.toLowerCase()?.includes(query?.toLowerCase()) ||
+					loop?.description?.toLowerCase()?.includes(query?.toLowerCase()) ||
+					loop?.address?.toLowerCase()?.includes(query?.toLowerCase())
+			);
+			return res;
 		}
 	}
 
@@ -52,14 +54,13 @@ export const Loops = () => {
 		}
 	};
 
-	const [query, setQuery] = useState("");
 	const length = query.length < 5 ? loops.length : getCurrentLoops().length;
 	return (
 		<MetaSideBarLayout
 			searchValue={query}
 			onSearchChange={(event) => {
 				setQuery(event);
-				if (event.length >= 5) {
+				if (event > 3) {
 					setPage(1);
 				}
 			}}

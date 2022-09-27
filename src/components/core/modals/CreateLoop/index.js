@@ -28,7 +28,7 @@ export const CreateLoopModal = ({ isOpen, handleOpen }) => {
 	const { Moralis, user, chainId, currentUser, isWeb3Enabled, enableWeb3 } =
 		useMoralis();
 	const { saveFile } = useMoralisFile();
-	const { getUserLoops } = useContext(UserContext);
+	const { getUserLoops, getNativeBalance } = useContext(UserContext);
 	const { goToALoop } = useAppNavigation();
 
 	const emptyNewLoop = {
@@ -93,13 +93,18 @@ export const CreateLoopModal = ({ isOpen, handleOpen }) => {
 							loopAddress: loop?.address,
 							image: newPic,
 							coalition: newLoop.coalition,
+							title: newLoop?.title,
+							description: newLoop?.description,
+							createdBy: user?.get("ethAddress"),
 						});
 						await Moralis.Cloud.run("joinLoop", {
 							loopAddress: loop?.address,
 							userAddress: user?.get("ethAddress"),
 						});
 						getUserLoops();
+						getNativeBalance();
 						goToALoop(loop?.address);
+						handleOpen();
 					})
 					.catch(function (e) {
 						console.log("error");

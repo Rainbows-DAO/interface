@@ -11,9 +11,11 @@ import { LoopContext } from "../../../../providers/LoopContextProvider";
 import { useLoopContract } from "../../../../hooks/Loop/useLoopContract";
 import { useAppNavigation } from "../../../../hooks/useAppNavigation";
 import { useMoralis } from "react-moralis";
+import { UserContext } from "../../../../providers/UserContextProvider";
 
 export const LeaveLoopModal = ({ isOpen, handleOpen }) => {
 	const { loop } = useContext(LoopContext);
+	const { getUserLoops } = useContext(UserContext);
 	const { refetchUserData } = useMoralis();
 	const { goToLoops } = useAppNavigation();
 	const { leaveLoop } = useLoopContract();
@@ -23,6 +25,7 @@ export const LeaveLoopModal = ({ isOpen, handleOpen }) => {
 			loopAddress: loop?.address,
 			onSuccess: () => {
 				refetchUserData();
+				getUserLoops();
 				goToLoops();
 			},
 		});

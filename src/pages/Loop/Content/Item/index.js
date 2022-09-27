@@ -10,7 +10,7 @@ import {
 	Button,
 } from "rainbows-ui";
 import { UNIT_TOKEN } from "../../../../constants/constants";
-import { tokenValueTxt } from "../../../../helpers/formatters";
+import { tokenValueTxt, unitValueTxt } from "../../../../helpers/formatters";
 import { useContext, useMemo, useState } from "react";
 import { LoopContext } from "../../../../providers/LoopContextProvider";
 import { calcTotalBudget } from "../../../../helpers/calculs";
@@ -19,10 +19,13 @@ import { useAppNavigation } from "../../../../hooks/useAppNavigation";
 import rainbowsTheme from "rainbows-ui/ThemeProvider/styles";
 import { getShortWallet } from "../../../../helpers/shortWallet";
 import { DeleteItemModal } from "../../../../components/core/modals/DeleteItem/index";
+import { ActionCard } from "../../../../components/core/Cards/ActionCard";
 import styled from "styled-components";
+import { UserContext } from "../../../../providers/UserContextProvider";
 export const Item = () => {
 	const params = useParams();
-	const { items } = useContext(LoopContext);
+	const { items, actions, loop, isItemInPlan } = useContext(LoopContext);
+	const { isUserMember } = useContext(UserContext);
 
 	const item = useMemo(() => {
 		const result = items.find(({ id }) => id === params.itemId);
@@ -30,6 +33,21 @@ export const Item = () => {
 		return result;
 	}, [params.itemId, items]);
 	const { goBack } = useAppNavigation();
+
+	const actionsInItem = useMemo(() => {
+		let result = actions?.filter(({ itemId }) => itemId === params.itemId);
+		return result;
+	}, [actions]);
+
+	const spent = useMemo(() => {
+		let res = 0;
+		for (let i = 0; i < actionsInItem?.length; i++) {
+			if (actionsInItem[i]?.paid && actionsInItem[i]?.itemId === item?.id) {
+				res += actionsInItem[i]?.cost;
+			}
+		}
+		return res;
+	}, [actions, item]);
 
 	const [isDeleteModal, setDeleteModal] = useState(false);
 
@@ -45,14 +63,18 @@ export const Item = () => {
 				>
 					<IconButton icon="angle" onClick={() => goBack()} />
 					<div style={{ display: "flex", alignItems: "center", gap: "3rem" }}>
-						{!item?.deleted && (
-							<div onClick={() => setDeleteModal(!isDeleteModal)}>
-								<RedTypo>Delete this item</RedTypo>
-							</div>
-						)}
+						{!item?.deleted &&
+							isUserMember(loop?.address) &&
+							loop?.state === "PLANNING" && (
+								<div onClick={() => setDeleteModal(!isDeleteModal)}>
+									<RedTypo>Delete this item</RedTypo>
+								</div>
+							)}
 						<MentionTag
-							text={item?.deleted ? "Deleted" : "Live"}
-							type={item?.deleted ? 0 : 4}
+							text={
+								item?.deleted && !isItemInPlan(item?.id) ? "Deleted" : "Live"
+							}
+							type={item?.deleted && !isItemInPlan(item?.id) ? 0 : 4}
 						/>
 					</div>
 				</Flexbox>
@@ -94,52 +116,80 @@ export const Item = () => {
 						<Typography variant="subtitleM" weight="medium">
 							Budget
 						</Typography>{" "}
-						<div
-							style={{
-								display: "flex",
-								alignItems: "center",
-								justifyContent: "space-between",
-
-								margin: "1rem 0 3rem 0",
-							}}
+						<br />
+						<Flexbox
+							display="flex"
+							justifyContent="space-between"
+							alignItems="center"
+							style={{ width: "100%" }}
 						>
-							<strong>
-								{tokenValueTxt(
-									item?.budget,
-									UNIT_TOKEN.decimal,
-									UNIT_TOKEN.ticker
-								)}{" "}
-								planned
-							</strong>
-							<strong>
-								-{" "}
-								{tokenValueTxt(
-									item?.spent,
-									UNIT_TOKEN.decimal,
-									UNIT_TOKEN.ticker
-								)}{" "}
-								spent
-							</strong>
-							<strong>
-								{tokenValueTxt(
-									item?.budget - item?.spent,
-									UNIT_TOKEN.decimal,
-									UNIT_TOKEN.ticker
-								)}{" "}
-								remaining
-							</strong>
-						</div>
+							{item && (
+								<>
+									<Flexbox
+										display="flex"
+										flexDirection="column"
+										alignItems="center"
+										justifyContent="center"
+									>
+										<Typography variant="subtitleM">
+											{unitValueTxt(item?.budget)}
+										</Typography>
+										<Typography variant="bodyM" weight="bold">
+											planned
+										</Typography>
+									</Flexbox>
+									<Flexbox
+										display="flex"
+										flexDirection="column"
+										alignItems="center"
+										justifyContent="center"
+									>
+										<RedText variant="subtitleM">{unitValueTxt(spent)}</RedText>
+										<RedText variant="bodyM" weight="bold">
+											spent
+										</RedText>
+									</Flexbox>
+
+									<Flexbox
+										display="flex"
+										flexDirection="column"
+										alignItems="center"
+										justifyContent="center"
+									>
+										<GreenText variant="subtitleM">
+											{unitValueTxt(item?.budget - spent)}
+										</GreenText>
+										<GreenText variant="bodyM" weight="bold">
+											remaining
+										</GreenText>
+									</Flexbox>
+								</>
+							)}
+						</Flexbox>
 					</section>
 					<Line variant="2" />
-					<section>
+					<section style={{ overflow: "hidden", width: "100%" }}>
 						<Flexbox display="flex" alignItems="center" style={{ gap: "1rem" }}>
 							<Typography variant="subtitleM" weight="bold">
-								00
+								{actionsInItem?.length}
 							</Typography>{" "}
 							<Typography variant="subtitleM" weight="medium">
-								Actions
+								{actionsInItem?.length > 1 ? "Actions" : "Action"}
 							</Typography>{" "}
 						</Flexbox>
+						<div
+							style={{
+								width: "100%",
+								overflow: "hidden",
+								overflowX: "scroll",
+							}}
+						>
+							<SliderStyle>
+								{actionsInItem?.map((action, index) => (
+									<ActionCard action={action} key={`action-${index}`} />
+								))}
+							</SliderStyle>
+						</div>
 					</section>
 				</Flexbox>
 			</PageContainer>
@@ -154,7 +204,30 @@ export const Item = () => {
 	);
 };
 
+const MoneyZone = ({ value }) => {};
+
 const RedTypo = styled(Typography)`
 	color: ${() => rainbowsTheme.colors.redOctober50};
 	cursor: pointer;
+`;
+
+const SliderStyle = styled.div`
+	&& {
+		width: max-content;
+		overflow-x: scroll;
+		padding: 5rem;
+		display: flex;
+		gap: 5rem;
+		&:first-child {
+			width: max-content;
+		}
+	}
+`;
+
+const GreenText = styled(Typography)`
+	color: ${rainbowsTheme.colors.superGreen};
+`;
+
+const RedText = styled(Typography)`
+	color: ${rainbowsTheme.colors.redOctober50};
 `;

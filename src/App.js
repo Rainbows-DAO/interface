@@ -34,7 +34,10 @@ import { Campaign } from "./pages/Loop/Content/Campaign";
 import { CampaignFailed } from "./pages/Loop/Content/CampaignFailed";
 import { CampaignRunning } from "./pages/Loop/Content/CampaignRunning";
 import { CreateAction } from "./pages/Loop/Content/CreateAction";
-
+import { SearchAction } from "./pages/Loop/Content/SearchAction";
+import { Action } from "./pages/Loop/Content/Action";
+import { ActionApproved } from "./pages/Loop/Content/ActionApproved/index";
+import { MyActions } from "./pages/Loop/Content/MyActions/index";
 function App() {
 	// Enable Moralis
 	const {
@@ -47,15 +50,6 @@ function App() {
 		account,
 	} = useMoralis();
 	const { getUnitBalance } = useUnitToken();
-	useEffect(() => {
-		if (!isAuthenticated && !isWeb3Enabled && !isWeb3EnableLoading)
-			enableWeb3({
-				provider: "web3Auth",
-				chainId: Moralis.Chains.POLYGON_MUMBAI,
-				clientId: String(process.env.REACT_APP_WEB3AUTH),
-			});
-	}, [isAuthenticated, isWeb3Enabled]);
-
 	const [loading, setLoading] = useState(false);
 
 	useEffect(() => {
@@ -181,6 +175,31 @@ function App() {
 			path: "loops/:loopAddress/new-action",
 			element: <CreateAction />,
 			page: "new-action",
+			tab: "tab-4",
+		},
+		{
+			path: "loops/:loopAddress/actions/search",
+			element: <SearchAction />,
+			page: "search-action",
+			tab: "tab-4",
+		},
+		{
+			path: "loops/:loopAddress/actions/:actionId",
+			element: <Action />,
+			page: "action",
+			tab: "tab-4",
+		},
+		{
+			path: "loops/:loopAddress/actions/approved",
+			element: <ActionApproved />,
+			page: "action-approved",
+			tab: "tab-4",
+		},
+
+		{
+			path: "loops/:loopAddress/my-actions",
+			element: <MyActions />,
+			page: "my-actions",
 			tab: "tab-4",
 		},
 	];

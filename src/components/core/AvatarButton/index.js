@@ -52,12 +52,7 @@ export const AvatarButton = () => {
 							handlePersonalInfoModal();
 						},
 					},
-					{
-						icon: "➕",
-						label: "Create a loop",
-						onClick: function noRefCheck() {},
-					},
-					{
+				{
 						icon: (
 							<img
 								alt={UNIT_TOKEN.ticker}

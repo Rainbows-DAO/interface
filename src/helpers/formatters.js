@@ -1,3 +1,5 @@
+import { UNIT_TOKEN } from "../constants/constants";
+
 export const n6 = new Intl.NumberFormat("en-us", {
 	style: "decimal",
 	minimumFractionDigits: 0,
@@ -21,3 +23,5 @@ export const tokenValue = (value, decimals) =>
 
 export const tokenValueTxt = (value, decimals, symbol) =>
 	`${n4.format(tokenValue(value, decimals))} ${symbol}`;
+export const unitValueTxt = (value) =>
+	`${n4.format(tokenValue(value, UNIT_TOKEN.decimal))} ${UNIT_TOKEN.ticker}`;

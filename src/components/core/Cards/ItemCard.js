@@ -16,7 +16,7 @@ export const ItemCard = ({ item }) => {
 			header={
 				<>
 					<strong>
-						{tokenValueTxt(item.budget, UNIT_TOKEN.decimal, UNIT_TOKEN.ticker)}
+						{tokenValueTxt(item?.budget, UNIT_TOKEN.decimal, UNIT_TOKEN.ticker)}
 					</strong>{" "}
 					required
 					<p>{item?.description} </p>

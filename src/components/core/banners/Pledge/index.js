@@ -7,7 +7,7 @@ import {
 	Typography,
 } from "rainbows-ui";
 import rainbowsTheme from "rainbows-ui/ThemeProvider/styles";
-import { useContext, useState } from "react";
+import { useContext, useEffect, useMemo, useState } from "react";
 import { BannerStyle } from "../style";
 import { toast } from "react-toastify";
 import { useProposalPlan } from "../../../../hooks/Loop/useProposalPlan";
@@ -18,21 +18,22 @@ import { UserContext } from "../../../../providers/UserContextProvider";
 import { useUnitToken } from "../../../../hooks/Unit/useUnitToken";
 
 import { useCrowdfundContract } from "../../../../hooks/Crowdfund/useCrowdfundContract";
-export const BannerPledge = ({ campaignId }) => {
-	const { loop } = useContext(LoopContext);
+import { unitValueTxt } from "../../../../helpers/formatters";
+export const BannerPledge = ({ campaignId, goal }) => {
+	const { loop, allowance, setLoopAllowance } = useContext(LoopContext);
 	const { unitBalance } = useContext(UserContext);
 	const [amount, setAmount] = useState(null);
-	const { mintUnitToken } = useUnitToken();
+	const { mintUnitToken, approve } = useUnitToken();
+	const [step, setStep] = useState(0);
 
 	const { pledge } = useCrowdfundContract(loop?.fundraiser);
 
+	function isEnoughBalance() {
+		return unitBalance >= amount;
+	}
+
 	function isValidAmount() {
-		return (
-			amount !== null &&
-			amount !== undefined &&
-			amount > 0 &&
-			amount <= unitBalance
-		);
+		return amount !== null && amount !== undefined && amount > 0;
 	}
 
 	const onClickPledge = () => {
@@ -40,25 +41,58 @@ export const BannerPledge = ({ campaignId }) => {
 			campaignId: campaignId,
 			loopAddress: loop?.address,
 			amount: amount,
-			onSuccess: () => {},
+			onSuccess: () => {
+				setLoopAllowance(loop?.fundraiser);
+			},
 		});
 	};
+
+	const onClickApprove = () => {
+		approve({
+			spender: loop?.fundraiser,
+			amount: amount,
+			onSuccess: () => {
+				setLoopAllowance(loop?.fundraiser);
+				setStep(step + 1);
+				let tmp = amount;
+				setAmount("");
+				setAmount(tmp);
+			},
+		});
+	};
+
+	const isAllowanceContext = useMemo(() => {
+		return amount > allowance;
+	}, [amount, allowance]);
+	const [getButtons, setGetButtons] = useState([]);
+
+	useEffect(() => {
+		if (isAllowanceContext)
+			setGetButtons([
+				{
+					name: "Approve!",
+					onClick: () => onClickApprove(),
+					secondary: true,
+				},
+			]);
+		else if (isEnoughBalance() && isValidAmount())
+			setGetButtons([
+				{
+					name: "Pledge!",
+					onClick: () => {
+						onClickPledge();
+					},
+					secondary: false,
+				},
+			]);
+		else return setGetButtons([]);
+	}, [allowance, amount, unitBalance]);
 
 	return (
 		<>
 			<BannerStyle
 				title={"Let`s make it happen!"}
-				buttons={
-					isValidAmount() && [
-						{
-							name: "Pledge!",
-							onClick: () => {
-								onClickPledge();
-							},
-							secondary: false,
-						},
-					]
-				}
+				buttons={getButtons}
 				content={
 					<div
 						style={{
@@ -67,26 +101,30 @@ export const BannerPledge = ({ campaignId }) => {
 							display: "flex-reverse",
 						}}
 					>
-						{amount > unitBalance && (
-							<Flexbox
-								style={{ width: "100%", gap: "3rem" }}
-								display="flex"
-								alignItems="center"
-							>
-								<Typography>
-									Unfortunately, you don't have this much...
-								</Typography>
-
-								<Link onClick={() => mintUnitToken()}>
-									Click me to mint 2,000 {UNIT_TOKEN.ticker}
-								</Link>
-							</Flexbox>
+						{isAllowanceContext && (
+							<Typography>
+								Before pledging, you must allow the fundraiser contracts to
+								manipulate ${unitValueTxt(amount)} on your behalf{" "}
+							</Typography>
+						)}
+						{!isEnoughBalance() && isValidAmount() && (
+							<Link onClick={() => mintUnitToken()}>
+								You don't have this much, click me to mint +2,000{" "}
+								{UNIT_TOKEN.ticker}
+							</Link>
 						)}
 						<PledgeTextField
 							type="number"
 							onChange={(e) => setAmount(e?.target?.valueAsNumber)}
-							label="Amount to pledge"
-							placeholder={`${unitBalance} ${UNIT_TOKEN?.ticker} max`}
+							label={`Amount to pledge | Allowance set to ${unitValueTxt(
+								allowance
+							)}`}
+							placeholder={`${
+								unitBalance > goal
+									? unitValueTxt(goal)
+									: unitValueTxt(unitBalance)
+							} max`}
+							value={amount}
 						/>
 					</div>
 				}

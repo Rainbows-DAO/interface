@@ -8,6 +8,8 @@ import {
 import { useParams } from "react-router";
 import { toast } from "react-toastify";
 import { useLoopContract } from "../hooks/Loop/useLoopContract";
+import { useGovernanceToken } from "../hooks/GovernanceToken/useGovernanceToken";
+import { useUnitToken } from "../hooks/Unit/useUnitToken";
 import { getCoalitionFromVariant } from "../constants/coalition";
 export const LoopContext = createContext(null);
 
@@ -24,6 +26,8 @@ export const LoopContextProvider = ({ children }) => {
 	} = useMoralis();
 
 	const { getLoopSummaryData } = useLoopContract();
+	const { delegates } = useGovernanceToken();
+	const { getAllowance } = useUnitToken();
 
 	const [loop, setLoop] = useState({
 		address: "",
@@ -52,18 +56,47 @@ export const LoopContextProvider = ({ children }) => {
 	const [items, setItems] = useState([]);
 	const [proposals, setProposals] = useState([]);
 	const [campaigns, setCampaigns] = useState([]);
+	const [actions, setActions] = useState([]);
+	const [delegatee, setDelegatee] = useState("");
+	const [allowance, setAllowance] = useState(0);
+
+	const claimedCampaign = useMemo(() => {
+		let arr = [];
+		arr = campaigns?.find((campaign, index) => campaign?.claimed === true);
+		return arr;
+	}, [campaigns]);
+
+	const claimedCampaignProposal = useMemo(() => {
+		let arr = [];
+		if (claimedCampaign) {
+			arr = proposals?.find(
+				(proposal, index) => proposal?.id === claimedCampaign?.proposalId
+			);
+		}
+		return arr;
+	}, [proposals, claimedCampaign]);
 
 	const totalBudget = useMemo(() => {
 		let total = 0;
-		if (items?.length > 0) {
-			for (let item of items) {
-				if (!item?.deleted) {
-					total += item.budget;
+		if (loop?.state !== "IMPLEMENTING") {
+			if (items?.length > 0) {
+				for (let item of items) {
+					if (!item?.deleted) {
+						total += item.budget;
+					}
+				}
+			}
+		} else {
+			if (claimedCampaignProposal?.plan?.length > 0) {
+				for (let item of claimedCampaignProposal?.plan) {
+					if (!item?.deleted) {
+						total += item.budget;
+					}
 				}
 			}
 		}
 		return [total];
-	}, [items]);
+	}, [items, loop?.state, claimedCampaignProposal]);
 
 	const itemsToPropose = useMemo(() => {
 		return items?.filter((item) => item?.deleted === false);
@@ -96,35 +129,60 @@ export const LoopContextProvider = ({ children }) => {
 		}
 	};
 
+	const getActions = async (loopAddress) => {
+		if (loopAddress !== "") {
+			let res = await Moralis.Cloud.run("getActions", {
+				loopAddress: loopAddress,
+			});
+			setActions(res);
+		}
+	};
+
+	const setLoopDelegatee = (tokenAddress) => {
+		delegates({
+			tokenAddress: tokenAddress,
+			onSuccess: (res) => {
+				setDelegatee(res);
+			},
+		});
+	};
+
+	const setLoopAllowance = (fundraiserAddress) => {
+		getAllowance({
+			spender: fundraiserAddress,
+			onSuccess: (data) => setAllowance(data),
+		});
+	};
+
 	const setLoopAddress = async (newAddress) => {
 		await getLoopData(newAddress);
 		await getItems(newAddress);
 		await getProposals(newAddress);
 		await getCampaigns(newAddress);
+		await getActions(newAddress);
 	};
-
 	const getLoopData = async (newAddress) => {
 		let MoralisData = await Moralis.Cloud.run("getLoopDetail", {
-			loopAddress: newAddress,
+			loopAddress: newAddress.toLowerCase(),
 		});
 		getLoopSummaryData(newAddress, (res) => {
 			setLoop((current) => {
 				return {
 					...loop,
-					address: newAddress,
+					address: newAddress?.toLowerCase(),
 					title: res[0],
 					description: res[1],
 					state: res[2].toUpperCase(),
 					memberCount: parseInt(res[3]),
 					itemCount: parseInt(res[4]),
 					balance: parseInt(res[5]),
-					plan: res[6],
-					token: res[7],
-					lock: res[8],
-					governor: res[9],
-					treasury: res[10],
-					fundraiser: res[11],
-					actions: res[12],
+					plan: res[6].toLowerCase(),
+					token: res[7].toLowerCase(),
+					lock: res[8].toLowerCase(),
+					governor: res[9].toLowerCase(),
+					treasury: res[10].toLowerCase(),
+					fundraiser: res[11].toLowerCase(),
+					actions: res[12].toLowerCase(),
 					avatar: MoralisData?.avatar,
 					createdBy: MoralisData?.createdBy,
 					coalition: {
@@ -134,8 +192,34 @@ export const LoopContextProvider = ({ children }) => {
 					members: MoralisData?.members,
 				};
 			});
+
+			setLoopDelegatee(res[7]);
+			setLoopAllowance(res[11]);
 		});
 	};
+
+	const updateLoopState = (loopAddress) => {
+		getLoopSummaryData(loopAddress, async (res) => {
+			await Moralis.Cloud.run("updateLoopState", {
+				state: res[2]?.toUpperCase(),
+				loopAddress: loopAddress,
+			});
+		});
+	};
+
+	function isPlan() {
+		return claimedCampaignProposal?.plan?.length > 0;
+	}
+
+	function isItemInPlan(itemid) {
+		let arr = claimedCampaignProposal?.plan?.find(
+			({ id }) => id?.toLowerCase() === itemid?.toLowerCase()
+		);
+		console.log(claimedCampaignProposal?.plan);
+		console.log(arr);
+		if (arr === null || arr === undefined) return false;
+		else return true;
+	}
 
 	useMoralisSubscription(
 		"Item",
@@ -182,6 +266,20 @@ export const LoopContextProvider = ({ children }) => {
 		}
 	);
 	useMoralisSubscription(
+		"Action",
+		(q) => q.equalTo("loop", loop?.address),
+		[loop?.address],
+		{
+			onCreate: (data) => {
+				getActions(loop?.address);
+			},
+			onUpdate: (data) => {
+				getActions(loop?.address);
+			},
+			enabled: true,
+		}
+	);
+	useMoralisSubscription(
 		"Loop",
 		(q) => q.equalTo("loop", loop?.address),
 		[loop?.address],
@@ -196,11 +294,11 @@ export const LoopContextProvider = ({ children }) => {
 	useMoralisSubscription(
 		"JoinLeaveLoop",
 		(q) => q.equalTo("loop", loop?.address),
-		[loop?.address],
+		[loop?.address && isAuthenticated],
 		{
 			onCreate: (data) => getLoopData(loop?.address),
 			onDelete: (data) => getLoopData(loop?.address),
-			enabled: true,
+			enabled: isAuthenticated,
 		}
 	);
 
@@ -212,6 +310,18 @@ export const LoopContextProvider = ({ children }) => {
 		itemsToPropose,
 		proposals,
 		campaigns,
+		claimedCampaignProposal,
+		claimedCampaign,
+		isPlan,
+		actions,
+		delegatee,
+		setLoopDelegatee,
+		getProposals,
+		allowance,
+		setLoopAllowance,
+		getCampaigns,
+		updateLoopState,
+		isItemInPlan,
 	};
 
 	return <LoopContext.Provider value={value}>{children}</LoopContext.Provider>;

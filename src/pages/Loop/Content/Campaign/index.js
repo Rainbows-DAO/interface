@@ -37,18 +37,22 @@ import { useMoralis } from "react-moralis";
 import moment from "moment";
 import { Pagination } from "@mui/material";
 import Tag from "rainbows-ui/components/Atoms/Tag/Tag";
+import { useCrowdfundContract } from "../../../../hooks/Crowdfund/useCrowdfundContract";
 
 export const Campaign = () => {
 	const params = useParams();
-	const { user } = useMoralis();
-	const { campaigns, proposals, loop } = useContext(LoopContext);
+	const { user, Moralis } = useMoralis();
+	const { campaigns, getCampaigns, proposals, loop } = useContext(LoopContext);
 	const { isUserMember } = useContext(UserContext);
 	const { goBack, goToProposal } = useAppNavigation();
+	const { getCampaign } = useCrowdfundContract(loop?.fundraiser);
 
 	const campaign = useMemo(() => {
-		let result = campaigns.find(({ id }) => id === params.campaignId);
-		const plan = proposals.find(({ id, plan }) => id === result?.proposalId);
-		result.plan = plan.plan;
+		let result = campaigns.find(({ id }) => id === parseInt(params.campaignId));
+		const plan = proposals?.find(
+			({ id }) => id?.toLowerCase() === result?.proposalId.toLowerCase()
+		);
+		if (result) result.plan = plan?.plan;
 		console.log(result?.pledgers);
 
 		console.log(result?.pledgersStyle);
@@ -67,10 +71,6 @@ export const Campaign = () => {
 	const handlePledgersPage = (event, value) => {
 		setPledgersPageCount(value);
 	};
-
-	function hasVoted() {
-		return campaign?.votes?.includes(user?.get("ethAddress"));
-	}
 
 	function isPledgeBanner() {
 		return campaign?.state === "OPEN";
@@ -97,19 +97,39 @@ export const Campaign = () => {
 	}
 
 	function getUserTotalPledge() {
-		return campaign?.pledgers.reduce(function (acc, obj) {
-			return acc + obj.amount;
-		}, 0);
+		let sum = 0;
+		if (campaign?.pledgers?.length > 0) {
+			for (let el of campaign?.pledgers) {
+				if (el?.user === user?.get("ethAddress")) sum += el?.amount;
+			}
+		}
+		return sum;
 	}
 
-	const onRefreshState = (e) => {
+	const onRefreshState = async (e) => {
 		e.preventDefault();
 
 		setDisabled(true);
 		setTimeout(() => {
 			setDisabled(false);
 		}, 10000);
-		alert("clicee");
+		const endDate = new Date(campaign?.endAt * 1000);
+		const startDate = new Date(campaign?.startAt * 1000);
+		const now = new Date();
+		let newState;
+		if (now.getTime() < startDate?.getTime()) newState = "SOON";
+		else if (
+			now.getTime() >= startDate?.getTime() &&
+			now?.getTime() < endDate?.getTime()
+		)
+			newState = "OPEN";
+		else if (now.getTime() >= endDate?.getTime()) newState = "CLOSED";
+		await Moralis.Cloud.run("updateCampaignState", {
+			state: newState,
+			campaignId: campaign?.id,
+			loopAddress: loop?.address,
+		});
+		getCampaigns();
 	};
 
 	function unitValueTxt(amount) {
@@ -128,18 +148,19 @@ export const Campaign = () => {
 				>
 					<IconButton icon="angle" onClick={(e) => goBack()} />
 					<div style={{ display: "flex", alignItems: "center", gap: "3rem" }}>
-						<RefreshButton
-							color="tertiary"
-							selected={!disabled}
-							onClick={(e) => onRefreshState(e)}
-							disabled={disabled}
-						>
-							Refresh campaign{" "}
-						</RefreshButton>
+						{campaign?.state !== "CLOSED" && (
+							<RefreshButton
+								color="tertiary"
+								selected={!disabled}
+								onClick={(e) => onRefreshState(e)}
+								disabled={disabled}
+							>
+								Refresh campaign{" "}
+							</RefreshButton>
+						)}{" "}
 						{campaign?.claimed === true && (
 							<MentionTag type={4} text={"Claimed"} />
 						)}
-
 						{campaign?.state === "CLOSED" && !isCampaignSuccess() && (
 							<MentionTag type={0} text={"Failed"} />
 						)}
@@ -158,7 +179,7 @@ export const Campaign = () => {
 						gap: "4.3rem",
 						paddingTop: "5rem",
 						paddingBottom: isPledgeBanner()
-							? "20rem"
+							? "30rem"
 							: isClaimFundBanner()
 							? "10rem"
 							: "",
@@ -167,7 +188,7 @@ export const Campaign = () => {
 					<Flexbox display="flex" alignItems="center" style={{ gap: "3rem" }}>
 						<div>
 							<Typography variant="subtitleM" weight="medium">
-								CAMPAIGN {getShortWallet(campaign?.id)}
+								CAMPAIGN {campaign?.id}
 							</Typography>
 							<Typography variant="titleXS" weight="extraBold">
 								{unitValueTxt(campaign?.goal)} goal
@@ -199,13 +220,13 @@ export const Campaign = () => {
 							votes={[
 								{
 									id: "voted-for",
-									part: campaign.pledge / campaign?.goal,
+									part: campaign?.pledge / campaign?.goal,
 									type: 5,
 								},
 
 								{
 									id: "vote-remaining",
-									part: 1 - campaign.pledge / campaign?.goal,
+									part: 1 - campaign?.pledge / campaign?.goal,
 									type: 3,
 								},
 							]}
@@ -279,7 +300,7 @@ export const Campaign = () => {
 					</Flexbox>
 
 					<section>
-						{[...campaign.pledgers]?.slice(start, end).map((pledger, index) => (
+						{campaign?.pledgers?.slice(start, end).map((pledger, index) => (
 							<Flexbox
 								display="flex"
 								style={{ width: "80%" }}
@@ -309,7 +330,7 @@ export const Campaign = () => {
 				</Flexbox>
 				{isPledgeBanner() && (
 					<>
-						<BannerPledge campaignId={campaign?.id} />
+						<BannerPledge campaignId={campaign?.id} goal={campaign?.goal} />
 					</>
 				)}
 				{isClaimFundBanner() && (

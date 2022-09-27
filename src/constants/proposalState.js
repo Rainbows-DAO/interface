@@ -61,6 +61,9 @@ export const getProposalStateFromText = (name) => {
 	return PROPOSAL_STATE.find((state) => state.text === name);
 };
 
+export const getProposalStateFromValue = (value) => {
+	return PROPOSAL_STATE.find((state) => state.value === value);
+};
 export const getProposalsRunning = (initialArray) => {
 	let arr = [];
 	if (initialArray.length > 0) {

@@ -13,11 +13,13 @@ import styled from "styled-components";
 import { LoopContext } from "../../../../providers/LoopContextProvider";
 import { FormContainer } from "../../style";
 import { usePlanContract } from "../../../../hooks/Plan/usePlanContract";
+import { useAppNavigation } from "../../../../hooks/useAppNavigation";
 
 export const CreateItem = () => {
 	const [isEmojiModal, setIsEmojiModal] = useState(false);
 	const { Moralis, user } = useMoralis();
 	const { loop } = useContext(LoopContext);
+	const { goToItem } = useAppNavigation();
 
 	const emptyItem = {
 		id: 0,
@@ -31,7 +33,12 @@ export const CreateItem = () => {
 	const { createItem } = usePlanContract(loop?.address, loop?.plan);
 
 	const onCreateItem = async () => {
-		createItem({ item: newItem, onSuccess: () => {} });
+		createItem({
+			item: newItem,
+			onSuccess: (itemId) => {
+				goToItem(loop?.address, itemId);
+			},
+		});
 	};
 
 	function isValidTitle() {

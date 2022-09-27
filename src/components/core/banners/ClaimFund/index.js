@@ -19,14 +19,22 @@ import { useUnitToken } from "../../../../hooks/Unit/useUnitToken";
 
 import { useCrowdfundContract } from "../../../../hooks/Crowdfund/useCrowdfundContract";
 export const BannerClaimFund = ({ campaignId }) => {
-	const { loop } = useContext(LoopContext);
+	const { loop, updateLoopState } = useContext(LoopContext);
 	const [amount, setAmount] = useState(null);
+	const { claimFund } = useProposalPlan(loop?.address);
 
 	function isValidAmount() {
 		return amount !== null && amount !== undefined;
 	}
 
-	const onClickPledge = () => {};
+	const onClickClaim = () => {
+		claimFund({
+			campaignId: campaignId,
+			onSuccess: () => {
+			  updateLoopState(loop?.address)
+			},
+		});
+	};
 
 	return (
 		<>
@@ -36,7 +44,7 @@ export const BannerClaimFund = ({ campaignId }) => {
 					{
 						name: "Claim & Close!",
 						onClick: () => {
-							onClickPledge();
+							onClickClaim();
 						},
 						secondary: false,
 					},

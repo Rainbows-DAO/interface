@@ -14,6 +14,7 @@ export const BannerVoteProposal = ({ proposalId }) => {
 		castVote({
 			vote: vote,
 			proposalId: proposalId,
+			support: vote,
 			onSuccess: () => {},
 		});
 	};

@@ -17,7 +17,7 @@ export const useUnitToken = () => {
 		fetch({
 			params: {
 				abi: ABI,
-				contractAddress: contracts["0x13881"]?.unit,
+				contractAddress: contracts[chainId]?.unit,
 				functionName: "balanceOf",
 				params: { account: user?.get("ethAddress") },
 			},
@@ -40,7 +40,7 @@ export const useUnitToken = () => {
 				params: { amount: 2000 },
 			},
 			onError: (err) => {
-				console.log(err);
+				toast?.error(err?.data?.message);
 			},
 			onSuccess: (tx) => {
 				console.log(tx);
@@ -60,5 +60,58 @@ export const useUnitToken = () => {
 		});
 	};
 
-	return { getUnitBalance, mintUnitToken };
+	const getAllowance = ({ spender, onSuccess }) => {
+		fetch({
+			params: {
+				abi: ABI,
+				contractAddress: contracts[chainId]?.unit,
+				functionName: "allowance",
+				params: {
+					owner: user?.get("ethAddress"),
+					spender: spender,
+				},
+			},
+			onError: (err) => {
+				console.log(err);
+			},
+			onSuccess: (tx) => {
+				console.log(parseInt(tx?._hex));
+				onSuccess(parseInt(tx?._hex));
+			},
+		});
+	};
+
+	const approve = ({ spender, amount, onSuccess }) => {
+		fetch({
+			params: {
+				abi: ABI,
+				contractAddress: contracts[chainId]?.unit,
+				functionName: "approve",
+				params: {
+					spender: spender,
+					amount: amount,
+				},
+			},
+			onError: (err) => {
+				toast?.error(err?.data?.message);
+			},
+			onSuccess: (tx) => {
+				console.log(tx);
+				toast.promise(
+					tx?.wait().then((final) => {
+						console.log(final);
+						onSuccess();
+					}),
+
+					{
+						pending: PENDING_MESSAGE(tx),
+						success: SUCCESS_MESSAGE.approve(spender, amount),
+						error: ERROR_MESSAGE,
+					}
+				);
+			},
+		});
+	};
+
+	return { getUnitBalance, mintUnitToken, getAllowance, approve };
 };

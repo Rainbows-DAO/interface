@@ -14,7 +14,7 @@ import {
 	Banner,
 	ButtonVote,
 } from "rainbows-ui";
-import { UNIT_TOKEN } from "../../../../constants/constants";
+import { UNIT_TOKEN, ZERO_ADDRESS } from "../../../../constants/constants";
 import { tokenValueTxt } from "../../../../helpers/formatters";
 import { useContext, useMemo, useState } from "react";
 import { LoopContext } from "../../../../providers/LoopContextProvider";
@@ -31,14 +31,18 @@ import { BannerVoteProposal } from "../../../../components/core/banners/VoteProp
 import { BannerQueueProposal } from "../../../../components/core/banners/QueuePlan/index";
 
 import { BannerExecuteProposal } from "../../../../components/core/banners/ExecutePlan/index";
+import { BannerDelegate } from "../../../../components/core/banners/Delegate/index";
 import { toast } from "react-toastify";
 import { useMoralis } from "react-moralis";
 import { CampaignCard } from "../../../../components/core/Cards/CampaignCard";
+import { useGovernorContract } from "../../../../hooks/Governor/useGovernorContract";
 export const Proposal = () => {
 	const params = useParams();
 	const { user } = useMoralis();
-	const { proposals, loop, campaigns } = useContext(LoopContext);
+	const { proposals, delegatee, loop, campaigns, getProposals } =
+		useContext(LoopContext);
 	const { isUserMember } = useContext(UserContext);
+	const { getProposalState } = useGovernorContract();
 
 	const proposal = useMemo(() => {
 		const result = proposals.find(({ id }) => id === params.proposalId);
@@ -64,18 +68,33 @@ export const Proposal = () => {
 		return proposal?.votes?.includes(user?.get("ethAddress"));
 	}
 
+	function isDelegateBanner() {
+		return delegatee === ZERO_ADDRESS;
+	}
+
 	function isVotingBox() {
 		return (
-			isUserMember(loop?.address) && proposal?.state === "ACTIVE" && !hasVoted()
+			isUserMember(loop?.address) &&
+			proposal?.state === "ACTIVE" &&
+			!hasVoted() &&
+			delegatee === user?.get("ethAddress")
 		);
 	}
 
 	function isQueueBanner() {
-		return isUserMember(loop?.address) && proposal?.state === "SUCCEEDED";
+		return (
+			isUserMember(loop?.address) &&
+			proposal?.state === "SUCCEEDED" &&
+			!isDelegateBanner()
+		);
 	}
 
 	function isExecuteBanner() {
-		return isUserMember(loop?.address) && proposal?.state === "QUEUED";
+		return (
+			isUserMember(loop?.address) &&
+			proposal?.state === "QUEUED" &&
+			!isDelegateBanner()
+		);
 	}
 
 	const onRefreshState = (e) => {
@@ -85,7 +104,12 @@ export const Proposal = () => {
 		setTimeout(() => {
 			setDisabled(false);
 		}, 10000);
-		alert("clicee");
+		getProposalState({
+			governorAddress: loop?.governor,
+			proposalId: proposal?.id,
+			onSuccess: () => {},
+		});
+		getProposals(loop?.address);
 	};
 
 	return (
@@ -100,14 +124,16 @@ export const Proposal = () => {
 				>
 					<IconButton icon="angle" onClick={(e) => goBack()} />
 					<div style={{ display: "flex", alignItems: "center", gap: "3rem" }}>
-						<RefreshButton
-							color="tertiary"
-							selected={!disabled}
-							onClick={(e) => onRefreshState(e)}
-							disabled={disabled}
-						>
-							Refresh state{" "}
-						</RefreshButton>
+						{proposal?.state !== "DEFEATED" && (
+							<RefreshButton
+								color="tertiary"
+								selected={!disabled}
+								onClick={(e) => onRefreshState(e)}
+								disabled={disabled}
+							>
+								Refresh state{" "}
+							</RefreshButton>
+						)}{" "}
 						<MentionTag
 							text={proposal?.state}
 							type={getProposalStateFromText(proposal?.state)?.colorVariant}
@@ -122,7 +148,9 @@ export const Proposal = () => {
 					style={{
 						gap: "4.3rem",
 						paddingTop: "5rem",
-						paddingBottom: isVotingBox()
+						paddingBottom: isDelegateBanner()
+							? "30rem"
+							: isVotingBox()
 							? "30rem"
 							: isQueueBanner()
 							? "15rem"
@@ -235,6 +263,7 @@ export const Proposal = () => {
 						</div>
 					</section>
 				</Flexbox>
+				{isDelegateBanner() && <BannerDelegate />}
 				{isVotingBox() && (
 					<>
 						<BannerVoteProposal proposalId={proposal?.id} />
