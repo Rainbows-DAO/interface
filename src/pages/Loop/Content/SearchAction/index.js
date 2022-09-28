@@ -16,7 +16,7 @@ export const SearchAction = () => {
 			name: el?.id,
 			value: index,
 			checked: true,
-		}))
+		})) || []
 	);
 
 	const actionsToDisplay = useMemo(() => {
