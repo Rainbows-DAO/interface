@@ -13,7 +13,7 @@ export const ActionApproved = () => {
 			name: el?.id,
 			value: index,
 			checked: true,
-		}))
+		})) || []
 	);
 
 	const approvedActions = useMemo(() => {
