@@ -29,7 +29,7 @@ git clone https://github.com/Rainbows-DAO/interface.git rainbows-interface && cd
 npm install
 ```
 
-Now create a file named `.env` file and the next environment variables:
+Now create a file named `.env` and fill the next environment variables:
 
 ```
 REACT_APP_SERVER_URL=
