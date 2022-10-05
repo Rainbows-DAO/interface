@@ -14,11 +14,11 @@ An open source interface for the decentralised virtuosity protocol Rainbows.
 
 Enabling users to:
 
-    * Create, join and leave loops
-    * Create or delete items
-    * Create, vote, queue or execute proposals
-    * Pledge and claim campaigns 
-    * Create, validate, execute or pay actions
+* Create, join and leave loops
+* Create or delete items
+* Create, vote, queue or execute proposals
+* Pledge and claim campaigns 
+* Create, validate, execute or pay actions
 
 ## HOW TO USE
 
