@@ -13,10 +13,11 @@
 An open source interface for the decentralised virtuosity protocol Rainbows.
 
 Enabling users to:
-_ Create, join and leave loops
-_ Create or delete items
-_ Create, vote, queue or execute proposals
-_ Pledge and claim campaigns \* Create, validate, execute or pay actions
+
+    - Create, join and leave loops
+    - Create or delete items
+    - Create, vote, queue or execute proposals
+    - Pledge and claim campaigns \* Create, validate, execute or pay actions
 
 ## HOW TO USE
 
@@ -27,7 +28,7 @@ git clone https://github.com/Rainbows-DAO/interface.git rainbows-interface && cd
 npm install
 ```
 
-Now create a file named `.env` file and fill the next environment variables:
+Now create a file named `.env` file and the next environment variables:
 
 ```
 REACT_APP_SERVER_URL=
