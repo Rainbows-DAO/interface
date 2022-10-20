@@ -188,7 +188,7 @@ export const Proposal = () => {
 								{proposal?.plan?.length}
 							</Typography>{" "}
 							<Typography variant="subtitleM" weight="medium">
-								Items
+							  {proposal?.plan?.length > 1 ? "Items" : "Item"}
 							</Typography>{" "}
 						</Flexbox>
 						<div

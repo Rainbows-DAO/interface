@@ -46,7 +46,7 @@ export const Campaign = () => {
 		console.log(result?.pledgersStyle);
 
 		return result;
-	}, [params.campaignId, campaigns, params.proposalId, proposals]);
+	}, [params.campaignId, campaigns, proposals]);
 	const [disabled, setDisabled] = useState(false);
 
 	const pledgeRemaining = useMemo(() => {
@@ -237,7 +237,9 @@ export const Campaign = () => {
 									{campaign?.plan?.length}
 								</Typography>{" "}
 								<Typography variant="subtitleM" weight="medium">
-									Items proposed
+									{campaign?.plan?.length > 1
+										? "Items proposed"
+										: "Item proposed"}
 								</Typography>{" "}
 							</Flexbox>
 							<Link
@@ -276,7 +278,7 @@ export const Campaign = () => {
 								{campaign?.pledgers?.length}
 							</Typography>{" "}
 							<Typography variant="subtitleM" weight="medium">
-								Pledges{" "}
+								{campaign?.pledgers?.length > 1 ? "Pledges" : "Pledge"}
 							</Typography>{" "}
 						</Flexbox>
 						<Pagination
