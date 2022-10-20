@@ -267,6 +267,7 @@ export const LoopContextProvider = ({ children }) => {
 		{
 			onCreate: (data) => {
 				getActions(loop?.address);
+				if (data?.attributes?.paid) updateLoopBalance(loop?.address);
 			},
 			onUpdate: (data) => {
 				getActions(loop?.address);
