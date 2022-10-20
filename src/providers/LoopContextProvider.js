@@ -270,7 +270,7 @@ export const LoopContextProvider = ({ children }) => {
 			},
 			onUpdate: (data) => {
 				getActions(loop?.address);
-				if (data?.attributes?.paid) updateLoopBalance(loop?.address);
+				if (data?.attributes?.paid === true) updateLoopBalance(loop?.address);
 			},
 			enabled: true,
 		}
