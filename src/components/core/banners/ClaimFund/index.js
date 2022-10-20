@@ -19,7 +19,7 @@ export const BannerClaimFund = ({ campaignId }) => {
 	return (
 		<>
 			<BannerStyle
-				title={"This proposal is a success!"}
+				title={"This campaign is a success!"}
 				buttons={[
 					{
 						name: "Claim & Close!",

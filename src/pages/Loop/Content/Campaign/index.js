@@ -284,6 +284,7 @@ export const Campaign = () => {
 							page={pledgersPageCount}
 							defaultPage={1}
 							onChange={(event, value) => handlePledgersPage(event, value)}
+							shape="rounded"
 						/>
 					</Flexbox>
 

@@ -3,6 +3,7 @@ import { useMoralis, useWeb3ExecuteFunction } from "react-moralis";
 import ABI from "../../constants/abi/contracts/Loop.sol/Loop.json";
 import { toast } from "react-toastify";
 import { LoopContext } from "../../providers/LoopContextProvider";
+import { UserContext } from "../../providers/UserContextProvider";
 import { useCrowdfundContract } from "../../hooks/Crowdfund/useCrowdfundContract";
 import {
 	PENDING_MESSAGE,
@@ -12,7 +13,8 @@ import {
 
 export const useProposalPlan = (loopAddress) => {
 	const { Moralis, user } = useMoralis();
-	const { loop, campaigns } = useContext(LoopContext);
+	const { loop, updateLoopBalance, campaigns } = useContext(LoopContext);
+	const { getNativeBalance } = useContext(UserContext);
 	const { getCampaign } = useCrowdfundContract(loop?.fundraiser);
 	const { fetch } = useWeb3ExecuteFunction();
 
@@ -45,6 +47,7 @@ export const useProposalPlan = (loopAddress) => {
 							description: description,
 							budget: budget,
 						});
+						getNativeBalance();
 						onSuccess(proposalId);
 					}),
 
@@ -77,6 +80,7 @@ export const useProposalPlan = (loopAddress) => {
 							state: "QUEUED",
 							userAddress: user?.get("ethAddress"),
 						});
+						getNativeBalance();
 						onSuccess();
 					}),
 
@@ -135,6 +139,7 @@ export const useProposalPlan = (loopAddress) => {
 									userAddress: user?.get("ethAddress"),
 								});
 
+								getNativeBalance();
 								onSuccess(newId);
 							},
 						});
@@ -172,6 +177,8 @@ export const useProposalPlan = (loopAddress) => {
 							loopAddress: loopAddress,
 						});
 
+						getNativeBalance();
+						updateLoopBalance(loopAddress);
 						onSuccess();
 					}),
 

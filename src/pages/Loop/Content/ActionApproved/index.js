@@ -1,5 +1,5 @@
 import { PageContainer } from "../../style";
-import {  Filter, Flexbox, Typography } from "rainbows-ui";
+import { Filter, Flexbox, Typography } from "rainbows-ui";
 import { useContext, useMemo, useState } from "react";
 import { LoopContext } from "../../../../providers/LoopContextProvider";
 import { ActionCard } from "../../../../components/core/Cards/ActionCard";
@@ -48,6 +48,7 @@ export const ActionApproved = () => {
 						defaultPage={1}
 						onChange={(event, value) => handlePage(event, value)}
 						count={Math.ceil(approvedActions?.length / 6)}
+						shape="rounded"
 					/>
 					<Filter
 						checkBoxItems={items}

@@ -1,5 +1,6 @@
 import { PageContainer } from "../../style";
-import { Card,  Flexbox, Typography } from "rainbows-ui";
+import { Flexbox, Typography } from "rainbows-ui";
+import { ItemCard } from "../../../../components/core/Cards/ItemCard";
 import { UNIT_TOKEN } from "../../../../constants/constants";
 import { tokenValueTxt } from "../../../../helpers/formatters";
 import { useContext, useMemo } from "react";
@@ -49,25 +50,7 @@ export const SearchItem = () => {
 				style={{ gap: "4.3rem", paddingTop: "5rem" }}
 			>
 				{existingItem?.map((item, index) => (
-					<Card
-						onClick={() => goToItem(loop?.address, item?.id)}
-						key={`item-${index}`}
-						emoji={item?.emoji}
-						title={item?.title}
-						header={
-							<>
-								<strong>
-									{tokenValueTxt(
-										item.budget,
-										UNIT_TOKEN.decimal,
-										UNIT_TOKEN.ticker
-									)}
-								</strong>{" "}
-								required
-								<p>{item?.description} </p>
-							</>
-						}
-					/>
+					<ItemCard item={item} key={`card-num-${index}`} />
 				))}
 			</Flexbox>
 		</PageContainer>

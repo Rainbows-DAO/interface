@@ -1,6 +1,6 @@
 import { MetaSideBarLayout } from "../../components/layout/MetaSideBarLayout/index";
 import { Flexbox, Card, Typography, Avatar } from "rainbows-ui";
-import { useContext,  useState } from "react";
+import { useContext, useState } from "react";
 import { LineMenu, LoopsDiv } from "./style";
 import { Pagination } from "@mui/material";
 import { getCoalitionFromVariant } from "../../constants/coalition";
@@ -52,7 +52,7 @@ export const Loops = () => {
 		}
 	};
 
-	const length = query.length < 5 ? loops.length : getCurrentLoops().length;
+	const length = query.length < 3 ? loops.length : getCurrentLoops().length;
 	return (
 		<MetaSideBarLayout
 			searchValue={query}
@@ -73,12 +73,9 @@ export const Loops = () => {
 					</Typography>
 					<Pagination
 						sx={{ marginRight: "5rem" }}
-						count={
-							query.length < 5
-								? Math.ceil(loops.length / 6)
-								: Math.ceil(getCurrentLoops().length / 6)
-						}
+						count={Math.ceil(length / 6)}
 						page={page}
+						shape="rounded"
 						defaultPage={1}
 						onChange={(event, value) => handlePage(event, value)}
 					/>

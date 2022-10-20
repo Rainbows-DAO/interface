@@ -6,9 +6,12 @@ import {
 	SUCCESS_MESSAGE,
 	ERROR_MESSAGE,
 } from "../../constants/ToastMessage";
+import { useContext } from "react";
+import { UserContext } from "../../providers/UserContextProvider";
 export const usePlanContract = (loopAddress, planAddress) => {
-	const {  Moralis,  user } = useMoralis();
+	const { Moralis, user } = useMoralis();
 	const { fetch } = useWeb3ExecuteFunction();
+	const { getNativeBalance } = useContext(UserContext);
 
 	const createItem = ({ item, onSuccess }) => {
 		fetch({
@@ -37,6 +40,8 @@ export const usePlanContract = (loopAddress, planAddress) => {
 							loopAddress: loopAddress,
 							createdBy: user?.get("ethAddress"),
 						});
+
+						getNativeBalance();
 						onSuccess(newItem?.id);
 					}),
 
@@ -71,6 +76,8 @@ export const usePlanContract = (loopAddress, planAddress) => {
 							itemId: itemId,
 							deletedBy: user?.get("ethAddress"),
 						});
+
+						getNativeBalance();
 						onSuccess();
 					}),
 

@@ -191,6 +191,17 @@ export const LoopContextProvider = ({ children }) => {
 		});
 	};
 
+	const updateLoopBalance = (loopAddress) => {
+		getLoopSummaryData(loopAddress, async (res) => {
+			setLoop((current) => {
+				return {
+					...loop,
+					balance: parseInt(res[5]),
+				};
+			});
+		});
+	};
+
 	function isPlan() {
 		return claimedCampaignProposal?.plan?.length > 0;
 	}
@@ -305,6 +316,7 @@ export const LoopContextProvider = ({ children }) => {
 		setLoopAllowance,
 		getCampaigns,
 		updateLoopState,
+		updateLoopBalance,
 		isItemInPlan,
 	};
 

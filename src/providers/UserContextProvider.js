@@ -24,6 +24,7 @@ export const UserContextProvider = ({ children }) => {
 	const [nativeBalance, setNativeBalance] = useState(0);
 	const [userLoop, setUserLoops] = useState([]);
 	const [loops, setLoops] = useState([]);
+	const [allUsers, setAllUsers] = useState([]);
 	const { saveFile } = useMoralisFile();
 
 	useEffect(() => {
@@ -31,6 +32,7 @@ export const UserContextProvider = ({ children }) => {
 			getNativeBalance();
 			getAllLoops();
 			getUserLoops();
+			getAllUsers();
 		}
 	}, [isAuthenticated, account, chainId, isInitialized]);
 
@@ -55,7 +57,7 @@ export const UserContextProvider = ({ children }) => {
 		}
 	);
 
-	useMoralisSubscription("Loop", (q) => q, [], {
+	useMoralisSubscription("Loop", (q) => q, [isInitialized], {
 		onCreate: (data) => getAllLoops(),
 		onUpdate: (data) => getAllLoops(),
 	});
@@ -117,6 +119,11 @@ export const UserContextProvider = ({ children }) => {
 		setLoops(res);
 	};
 
+	const getAllUsers = async () => {
+		let res = await Moralis.Cloud.run("getAllUsers");
+		setAllUsers(res);
+	};
+
 	function isUserMember(loopAddress) {
 		return user?.get("memberIn")?.includes(loopAddress.toLowerCase());
 	}
@@ -134,6 +141,7 @@ export const UserContextProvider = ({ children }) => {
 		getAllLoops,
 		loops,
 		isUserMember,
+		allUsers,
 	};
 
 	return <UserContext.Provider value={value}>{children}</UserContext.Provider>;

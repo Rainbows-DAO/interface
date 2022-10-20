@@ -33,7 +33,7 @@ export const SUCCESS_MESSAGE = {
 	pledge: (amount) => `You just pledge ${unitValueTxt(amount)}, GG`,
 	claimFund: `Campaign closed. Funds transfered to loop contract. Time to Act!`,
 	validateAction: `You just validated an action!`,
-	executeAction: `You just executd an action!`,
+	executeAction: `You just executed an action!`,
 	payAction: (payee, amount) =>
 		`The loop contract just paid ${unitValueTxt(amount)} to ${getShortWallet(
 			payee

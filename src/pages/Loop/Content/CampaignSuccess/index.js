@@ -40,7 +40,8 @@ export const CampaignSuccess = () => {
 						page={page}
 						defaultPage={1}
 						onChange={(event, value) => handlePage(event, value)}
-						count={Math.ceil(successedCampaigns?.length / 6)}
+	shape="rounded"
+					count={Math.ceil(successedCampaigns?.length / 6)}
 					/>
 			</Flexbox>
 			</Flexbox>

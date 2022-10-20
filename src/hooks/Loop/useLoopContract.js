@@ -6,10 +6,13 @@ import {
 	SUCCESS_MESSAGE,
 	ERROR_MESSAGE,
 } from "../../constants/ToastMessage";
+import { useContext } from "react";
+import { UserContext } from "../../providers/UserContextProvider";
 
 export const useLoopContract = () => {
-	const { Moralis,  user } = useMoralis();
+	const { Moralis, user } = useMoralis();
 	const { fetch } = useWeb3ExecuteFunction();
+	const { getNativeBalance } = useContext(UserContext);
 
 	const getLoopSummaryData = (loopAddress, onSuccess) => {
 		let result;
@@ -47,6 +50,7 @@ export const useLoopContract = () => {
 							loopAddress: loopAddress,
 							userAddress: user?.get("ethAddress"),
 						});
+						getNativeBalance();
 						onSuccess();
 					}),
 
@@ -78,6 +82,7 @@ export const useLoopContract = () => {
 							loopAddress: loopAddress,
 							userAddress: user?.get("ethAddress"),
 						});
+						getNativeBalance();
 						onSuccess();
 					}),
 

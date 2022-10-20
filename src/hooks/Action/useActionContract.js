@@ -7,9 +7,14 @@ import {
 	SUCCESS_MESSAGE,
 	ERROR_MESSAGE,
 } from "../../constants/ToastMessage";
+import { UserContext } from "../../providers/UserContextProvider";
+import { LoopContext } from "../../providers/LoopContextProvider";
+import { useContext } from "react";
 export const useActionContract = (actionAddress) => {
-	const {  Moralis, user } = useMoralis();
+	const { Moralis, user } = useMoralis();
 	const { fetch } = useWeb3ExecuteFunction();
+	const { getNativeBalance } = useContext(UserContext);
+	const { loop, updateLoopBalance, actions } = useContext(LoopContext);
 
 	const createAction = async ({ action, onSuccess = (actionId) => {} }) => {
 		fetch({
@@ -38,10 +43,11 @@ export const useActionContract = (actionAddress) => {
 					tx?.wait().then(async (final) => {
 						console.log(final);
 
-						await Moralis.Cloud.run("saveNewAction", {
+						let newId = await Moralis.Cloud.run("saveNewAction", {
 							action: action,
 						});
-						onSuccess(action?.id);
+						getNativeBalance();
+						onSuccess(newId);
 					}),
 
 					{
@@ -79,6 +85,7 @@ export const useActionContract = (actionAddress) => {
 							actionId: action?.id,
 							itemId: action?.itemId,
 						});
+						getNativeBalance();
 						onSuccess();
 					}),
 
@@ -117,7 +124,7 @@ export const useActionContract = (actionAddress) => {
 							actionId: action?.id,
 							itemId: action?.itemId,
 						});
-
+						getNativeBalance();
 						onSuccess();
 					}),
 
@@ -156,7 +163,8 @@ export const useActionContract = (actionAddress) => {
 							actionId: action?.id,
 							itemId: action?.itemId,
 						});
-
+						getNativeBalance();
+						updateLoopBalance(loop?.address);
 						onSuccess();
 					}),
 

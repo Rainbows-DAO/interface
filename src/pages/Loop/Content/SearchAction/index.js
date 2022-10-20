@@ -1,5 +1,5 @@
 import { PageContainer } from "../../style";
-import {  Filter, Flexbox, Typography } from "rainbows-ui";
+import { Filter, Flexbox, Typography } from "rainbows-ui";
 import { useContext, useMemo, useState } from "react";
 import { LoopContext } from "../../../../providers/LoopContextProvider";
 import { ActionCard } from "../../../../components/core/Cards/ActionCard";
@@ -43,6 +43,7 @@ export const SearchAction = () => {
 				<Flexbox display="flex" style={{ gap: "5rem" }} alignItems="center">
 					<Pagination
 						page={page}
+						shape="rounded"
 						defaultPage={1}
 						onChange={(event, value) => handlePage(event, value)}
 						count={Math.ceil(actionsToDisplay?.length / 6)}

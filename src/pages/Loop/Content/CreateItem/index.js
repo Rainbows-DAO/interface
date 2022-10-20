@@ -81,6 +81,7 @@ export const CreateItem = () => {
 					</EmojiButton>
 					<TextField
 						id="form-new-item"
+						required={true}
 						label="Title"
 						placeholder="Exemple: Advertise the concert"
 						variant="placeholder"
@@ -91,6 +92,7 @@ export const CreateItem = () => {
 				</Flexbox>
 
 				<TextField
+					required={true}
 					onChange={(event) =>
 						setNewItem({ ...newItem, description: event?.target?.value })
 					}
@@ -99,11 +101,12 @@ export const CreateItem = () => {
 					multiline
 				/>
 				<TextField
+					required={true}
 					id="standard-number"
 					inputLabelProps={{
 						shrink: true,
 					}}
-					label="Budget"
+					label="Budget in UNIT"
 					max={100000000000000}
 					valid={isValidBudgeet()}
 					min={0}

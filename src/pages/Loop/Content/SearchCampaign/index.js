@@ -29,7 +29,8 @@ export const SearchCampaign = () => {
 						page={page}
 						defaultPage={1}
 						onChange={(event, value) => handlePage(event, value)}
-						count={Math.ceil(campaigns?.length / 6)}
+	shape="rounded"
+					count={Math.ceil(campaigns?.length / 6)}
 					/>
 				</Flexbox>
 			</Flexbox>

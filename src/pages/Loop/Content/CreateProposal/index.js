@@ -1,11 +1,5 @@
-import {
-	Button,
-	Flexbox,
-	Stepper,
-	TextField,
-	Typography,
-} from "rainbows-ui";
-import { useContext,  useState } from "react";
+import { Button, Flexbox, Stepper, TextField, Typography } from "rainbows-ui";
+import { useContext, useState } from "react";
 import styled from "styled-components";
 import { LoopContext } from "../../../../providers/LoopContextProvider";
 import { FormContainer } from "../../style";
@@ -48,7 +42,7 @@ export const CreateProposal = () => {
 		}
 	}
 	return (
-		<FormContainer style={{ overflowY: "scroll" }}>
+		<FormContainer style={{ overflowX: "scroll", width: "100%" }}>
 			<div>
 				<Flexbox
 					display="flex"
@@ -86,7 +80,12 @@ export const CreateProposal = () => {
 						</Flexbox>
 						<br />
 						<div
-							style={{ overflow: "hidden", width: "100%", overflowX: "scroll" }}
+							style={{
+								overflow: "hidden",
+								width: "100%",
+								height: "fit-content",
+								overflowY: "scroll",
+							}}
 						>
 							<SliderStyle>
 								{itemsToPropose?.map((item, index) => (
@@ -116,7 +115,7 @@ export const CreateProposal = () => {
 					flexDirection="row"
 					alignItems="center"
 					justifyContent="space-between"
-					style={{ gap: 25, width: "100%" }}
+					style={{ gap: 25, width: "100%", marginBottom: "2rem" }}
 				>
 					{step === 1 ? (
 						<div>
@@ -165,10 +164,11 @@ export const CreateProposal = () => {
 
 const SliderStyle = styled.div`
 	&& {
-		width: max-content;
-		overflow-x: scroll;
+		overflow-y: scroll;
+		height: 100%;
 		padding: 5rem;
 		display: flex;
+		flex-direction: column;
 		gap: 5rem;
 		&:first-child {
 			width: max-content;

@@ -7,6 +7,7 @@ import {
 	Typography,
 	Button,
 	Link,
+	UserListItem,
 } from "rainbows-ui";
 import { UNIT_TOKEN } from "../../../../constants/constants";
 import { tokenValueTxt } from "../../../../helpers/formatters";
@@ -29,8 +30,7 @@ import { useMoralis } from "react-moralis";
 export const Action = () => {
 	const params = useParams();
 	const { user } = useMoralis();
-	const { actions, items,  loop } =
-		useContext(LoopContext);
+	const { actions, items, loop } = useContext(LoopContext);
 	const { isUserMember } = useContext(UserContext);
 	const { goBack, goToItem } = useAppNavigation();
 
@@ -132,11 +132,32 @@ export const Action = () => {
 				>
 					<Flexbox display="flex" alignItems="center" style={{ gap: "3rem" }}>
 						<div>
-							<Typography variant="subtitleM" weight="medium">
-								ACTION {action?.id} | {action?.paid ? "paid to " : "due to "}{" "}
-								{getShortWallet(action?.payee)}
-							</Typography>
+							<Flexbox
+								display="flex"
+								alignItems="center"
+								style={{ gap: "1.2rem" }}
+							>
+								<Typography variant="subtitleM" weight="medium">
+									ACTION {action?.id} | {action?.paid ? "paid to " : "due to "}{" "}
+								</Typography>
 
+								<StyledUserListItem
+									style={{ width: "fit-content" }}
+									avatar={{
+										alt: action?.payeeDetails?.username,
+										color: action?.payeeDetails?.color,
+										variant:
+											action?.payeeDetails?.avatar === null ||
+											action?.payeeDetails?.avatar === undefined
+												? "noimage"
+												: "image",
+										src:
+											action?.payeeDetails?.avatar !== null &&
+											action?.payeeDetails?.avatar !== undefined &&
+											action?.payeeDetails?.avatar,
+									}}
+								/>
+							</Flexbox>{" "}
 							<Flexbox
 								display="flex"
 								alignItems="center"
@@ -239,5 +260,11 @@ const SliderStyle = styled.div`
 		&:first-child {
 			width: max-content;
 		}
+	}
+`;
+
+const StyledUserListItem = styled(UserListItem)`
+	&& {
+		width: fit-content;
 	}
 `;

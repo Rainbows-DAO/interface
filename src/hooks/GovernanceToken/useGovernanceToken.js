@@ -6,9 +6,13 @@ import {
 	SUCCESS_MESSAGE,
 	ERROR_MESSAGE,
 } from "../../constants/ToastMessage";
+import {UserContext} from "../../providers/UserContextProvider";
+import {useContext} from "react";
+
 export const useGovernanceToken = () => {
 	const {  user } = useMoralis();
 	const { fetch } = useWeb3ExecuteFunction();
+  	const {getNativeBalance} = useContext(UserContext)
 
 	const delegates = async ({ tokenAddress, onSuccess }) => {
 		fetch({
@@ -48,6 +52,7 @@ export const useGovernanceToken = () => {
 				toast.promise(
 					tx?.wait().then(async (final) => {
 						console.log(final);
+					  	getNativeBalance();
 						onSuccess();
 					}),
 

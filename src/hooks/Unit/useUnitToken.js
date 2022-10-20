@@ -12,7 +12,7 @@ import {
 export const useUnitToken = () => {
 	const { chainId, user } = useMoralis();
 	const { fetch } = useWeb3ExecuteFunction();
-	const { setUnitBalance } = useContext(UserContext);
+	const { setUnitBalance, getNativeBalance } = useContext(UserContext);
 	const getUnitBalance = () => {
 		fetch({
 			params: {
@@ -48,6 +48,7 @@ export const useUnitToken = () => {
 					tx?.wait().then((final) => {
 						console.log(final);
 						getUnitBalance();
+						getNativeBalance();
 					}),
 
 					{
@@ -101,6 +102,7 @@ export const useUnitToken = () => {
 					tx?.wait().then((final) => {
 						console.log(final);
 						onSuccess();
+						getNativeBalance();
 					}),
 
 					{

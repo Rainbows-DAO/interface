@@ -6,9 +6,15 @@ import {
 	SUCCESS_MESSAGE,
 	ERROR_MESSAGE,
 } from "../../constants/ToastMessage";
+import { UserContext } from "../../providers/UserContextProvider";
+import { useContext } from "react";
+import { useUnitToken } from "../Unit/useUnitToken";
+
 export const useCrowdfundContract = (fundraiserAddress) => {
 	const { Moralis, user } = useMoralis();
 	const { fetch } = useWeb3ExecuteFunction();
+	const { getNativeBalance } = useContext(UserContext);
+	const { getUnitBalance } = useUnitToken();
 
 	const getCampaign = async ({ campaignId, onSuccess }) => {
 		fetch({
@@ -63,7 +69,8 @@ export const useCrowdfundContract = (fundraiserAddress) => {
 							amount: amount,
 							loopAddress: loopAddress,
 						});
-
+						getNativeBalance();
+						getUnitBalance();
 						onSuccess();
 					}),
 

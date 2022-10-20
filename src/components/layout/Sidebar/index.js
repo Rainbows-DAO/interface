@@ -11,7 +11,7 @@ export const SideBar = () => {
 	const handleCreateModal = () => setIsCreateLoopModal(!isCreateLoopModal);
 	const { goToLoops, goToALoop } = useAppNavigation();
 
-	const { userLoop } = useContext(UserContext);
+	const { userLoop, getAllLoops } = useContext(UserContext);
 	const params = useParams();
 	const [selected, setSelected] = useState(params?.loopAddress?.toLowerCase());
 
@@ -52,7 +52,10 @@ export const SideBar = () => {
 						src={logo}
 						variant="image"
 						color="transparent"
-						onClick={() => goToLoops()}
+						onClick={() => {
+							getAllLoops();
+							goToLoops();
+						}}
 					/>
 				}
 				searchButton={{

@@ -1,11 +1,7 @@
 import { PageContainer } from "../../style";
-import { Card, Filter, Flexbox, Typography } from "rainbows-ui";
-import { UNIT_TOKEN } from "../../../../constants/constants";
-import { tokenValueTxt } from "../../../../helpers/formatters";
+import { Filter, Flexbox, Typography } from "rainbows-ui";
 import { useContext, useMemo, useState } from "react";
 import { LoopContext } from "../../../../providers/LoopContextProvider";
-import { calcTotalBudget } from "../../../../helpers/calculs";
-import { useAppNavigation } from "../../../../hooks/useAppNavigation";
 import { ActionCard } from "../../../../components/core/Cards/ActionCard";
 import { Pagination } from "@mui/material";
 import { useMoralis } from "react-moralis";
@@ -30,7 +26,7 @@ export const MyActions = () => {
 		arr = arr?.map((el) => el?.name);
 
 		return result?.filter((el) => arr?.indexOf(el?.itemId) > -1);
-	}, [actions, items]);
+	}, [actions, items, user]);
 
 	const [page, setPage] = useState(1);
 	const handlePage = (event, value) => setPage(value);
@@ -56,6 +52,7 @@ export const MyActions = () => {
 						defaultPage={1}
 						onChange={(event, value) => handlePage(event, value)}
 						count={Math.ceil(myActions?.length / 6)}
+						shape="rounded"
 					/>
 					<Filter
 						checkBoxItems={items}

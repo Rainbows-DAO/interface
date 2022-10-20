@@ -10,8 +10,7 @@ import { UserContext } from "../../../providers/UserContextProvider";
 export const InfoPage = ({ state = "general" }) => {
 	const { loop } = useContext(LoopContext);
 	const { isUserMember } = useContext(UserContext);
-	const {  goToAllMembers, goToALoop, goToLoopInfo } =
-		useAppNavigation();
+	const { goToAllMembers, goToALoop, goToLoopInfo } = useAppNavigation();
 	const [isLeaveLoopModal, setIsLeaveLoopModal] = useState(false);
 	const handleLeaveLoopModal = () => setIsLeaveLoopModal(!isLeaveLoopModal);
 
@@ -61,7 +60,7 @@ export const InfoPage = ({ state = "general" }) => {
 						onClick={() => goToAllMembers(loop?.address)}
 						selected={state === "all-members"}
 					/>
-					{isUserMember(loop?.address) && (
+					{isUserMember(loop?.address) && loop.state === "PLANNING" && (
 						<InfoNavItem
 							data-testid="leave-loop"
 							emoji="👋"

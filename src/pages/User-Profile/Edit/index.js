@@ -1,6 +1,6 @@
 import { Header } from "../../../components/layout/Header/style";
 import { AvatarButton } from "../../../components/core/AvatarButton/index";
-import { useContext, useEffect,  useRef, useState } from "react";
+import { useContext, useEffect, useRef, useState } from "react";
 import { useMoralis } from "react-moralis";
 import {
 	Button,
@@ -21,12 +21,7 @@ import { useAppNavigation } from "../../../hooks/useAppNavigation";
 const rand = Math.floor(Math.random() * (PERSONALITIES_COLOR.length - 1));
 
 export const Edit = () => {
-	const {
-		user,
-		chainId,
-		setUserData,
-		refetchUserData,
-	} = useMoralis();
+	const { user, chainId, setUserData, refetchUserData } = useMoralis();
 	const { goToLoops } = useAppNavigation();
 	const { editAvatar, editUsername } = useContext(UserContext);
 
@@ -70,6 +65,7 @@ export const Edit = () => {
 	}
 
 	function isValidEmail() {
+		if (email?.length === 0) return true;
 		return /\S+@\S+\.\S+/.test(email);
 	}
 
@@ -194,9 +190,10 @@ export const Edit = () => {
 										id="validated"
 										label="Email address"
 										type="email"
-										errorMessage="Invalid email!"
+										error={email?.length > 0 && !isValidEmail()}
+										valid={email?.length === 0 || isValidEmail()}
+										errorMessage={!isValidEmail() && "Invalid email!"}
 										onChange={(event) => setEmail(event?.target.value)}
-										required={true}
 									/>
 								</>
 							) : (

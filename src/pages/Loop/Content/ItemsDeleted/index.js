@@ -1,5 +1,5 @@
 import { PageContainer } from "../../style";
-import { Card , Flexbox, Typography } from "rainbows-ui";
+import { Flexbox, Typography } from "rainbows-ui";
 import { UNIT_TOKEN } from "../../../../constants/constants";
 import { tokenValueTxt } from "../../../../helpers/formatters";
 import { useContext, useMemo } from "react";
@@ -7,6 +7,8 @@ import { LoopContext } from "../../../../providers/LoopContextProvider";
 import { calcTotalBudget } from "../../../../helpers/calculs";
 import { getShortWallet } from "../../../../helpers/shortWallet";
 import { useAppNavigation } from "../../../../hooks/useAppNavigation";
+import { ItemCard } from "../../../../components/core/Cards/ItemCard";
+
 export const ItemsDeleted = () => {
 	const { items, loop, isItemInPlan } = useContext(LoopContext);
 	const { goToItem } = useAppNavigation();
@@ -38,7 +40,7 @@ export const ItemsDeleted = () => {
 					</strong>
 					{" Worth of budget"}
 				</Typography>
-		</Flexbox>
+			</Flexbox>
 			<Flexbox
 				display="flex"
 				flexWrap="wrap"
@@ -46,43 +48,7 @@ export const ItemsDeleted = () => {
 				style={{ gap: "4.3rem", paddingTop: "5rem" }}
 			>
 				{itemsDeleted?.map((item, index) => (
-					<Card
-						key={`item-${index}`}
-						onClick={() => goToItem(loop?.address, item?.id)}
-						emoji={item?.emoji}
-						title={item?.title}
-						header={
-							<>
-								<div
-									style={{
-										display: "flex",
-										alignItems: "center",
-										justifyContent: "space-between",
-									}}
-								>
-									<div
-										style={{ display: "flex", alignItems: "center", gap: 5 }}
-									>
-										<strong>
-											{tokenValueTxt(
-												item.budget,
-												UNIT_TOKEN.decimal,
-												UNIT_TOKEN.ticker
-											)}
-										</strong>{" "}
-										required
-									</div>
-									{item?.deleted && !isItemInPlan(item?.id) && (
-										<p style={{ color: "red" }}>
-											{" "}
-											Deleted by {getShortWallet(item?.deletedBy)}!
-										</p>
-									)}
-								</div>
-								<p>{item?.description} </p>
-							</>
-						}
-					/>
+					<ItemCard key={`item-${index}`} item={item} />
 				))}
 			</Flexbox>
 		</PageContainer>

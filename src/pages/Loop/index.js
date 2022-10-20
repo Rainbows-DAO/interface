@@ -47,10 +47,11 @@ export const Loop = ({ page = "add-item", children }) => {
 		return false;
 	}
 	function getBanner() {
+		let isMember = isUserMember(loop?.address);
 		if (!preventBanner()) {
-			if (!isUserMember(loop?.address)) {
+			if (!isMember && loop.state === "PLANNING") {
 				return banners[0];
-			} else if (delegatee === ZERO_ADDRESS) {
+			} else if (delegatee === ZERO_ADDRESS && isMember) {
 				return banners[1];
 			} else return {};
 		} else return {};

@@ -1,12 +1,6 @@
 import { PageContainer } from "../../style";
-import {
-	Flexbox,
-	IconButton,
-	Line,
-	MentionTag,
-	Typography,
-} from "rainbows-ui";
-import {  unitValueTxt } from "../../../../helpers/formatters";
+import { Flexbox, IconButton, Line, MentionTag, Typography } from "rainbows-ui";
+import { unitValueTxt } from "../../../../helpers/formatters";
 import { useContext, useMemo, useState } from "react";
 import { LoopContext } from "../../../../providers/LoopContextProvider";
 import { useParams } from "react-router";
@@ -130,34 +124,40 @@ export const Item = () => {
 											{unitValueTxt(item?.budget)}
 										</Typography>
 										<Typography variant="bodyM" weight="bold">
-											planned
+											{loop?.state === "IMPLEMENTING" ? "financed" : "planned"}{" "}
 										</Typography>
 									</Flexbox>
-									<Flexbox
-										display="flex"
-										flexDirection="column"
-										alignItems="center"
-										justifyContent="center"
-									>
-										<RedText variant="subtitleM">{unitValueTxt(spent)}</RedText>
-										<RedText variant="bodyM" weight="bold">
-											spent
-										</RedText>
-									</Flexbox>
+									{loop?.state === "IMPLEMENTING" && (
+										<>
+											<Flexbox
+												display="flex"
+												flexDirection="column"
+												alignItems="center"
+												justifyContent="center"
+											>
+												<RedText variant="subtitleM">
+													{unitValueTxt(spent)}
+												</RedText>
+												<RedText variant="bodyM" weight="bold">
+													spent
+												</RedText>
+											</Flexbox>
 
-									<Flexbox
-										display="flex"
-										flexDirection="column"
-										alignItems="center"
-										justifyContent="center"
-									>
-										<GreenText variant="subtitleM">
-											{unitValueTxt(item?.budget - spent)}
-										</GreenText>
-										<GreenText variant="bodyM" weight="bold">
-											remaining
-										</GreenText>
-									</Flexbox>
+											<Flexbox
+												display="flex"
+												flexDirection="column"
+												alignItems="center"
+												justifyContent="center"
+											>
+												<GreenText variant="subtitleM">
+													{unitValueTxt(item?.budget - spent)}
+												</GreenText>
+												<GreenText variant="bodyM" weight="bold">
+													remaining
+												</GreenText>
+											</Flexbox>
+										</>
+									)}{" "}
 								</>
 							)}
 						</Flexbox>

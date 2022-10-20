@@ -6,10 +6,14 @@ import {
 	SUCCESS_MESSAGE,
 	ERROR_MESSAGE,
 } from "../../constants/ToastMessage";
+import { UserContext } from "../../providers/UserContextProvider";
 import { getProposalStateFromValue } from "../../constants/proposalState";
+import { useContext } from "react";
+
 export const useGovernorContract = (governorAddress) => {
-	const {  Moralis,  user } = useMoralis();
+	const { Moralis, user } = useMoralis();
 	const { fetch } = useWeb3ExecuteFunction();
+	const { getNativeBalance } = useContext(UserContext);
 
 	const castVote = async ({ vote, proposalId, support, onSuccess }) => {
 		fetch({
@@ -36,7 +40,7 @@ export const useGovernorContract = (governorAddress) => {
 							proposalId: proposalId,
 							vote: vote,
 						});
-
+						getNativeBalance();
 						onSuccess();
 					}),
 

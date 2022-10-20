@@ -39,6 +39,8 @@ export const CampaignFailed = () => {
 						defaultPage={1}
 						onChange={(event, value) => handlePage(event, value)}
 						count={Math.ceil(failedCampaigns?.length / 6)}
+shape="rounded"
+
 					/>
 				</Flexbox>
 			</Flexbox>

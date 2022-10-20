@@ -1,4 +1,4 @@
-import { Flexbox, MentionTag, Typography } from "rainbows-ui";
+import { Flexbox, MentionTag, Typography, UserListItem } from "rainbows-ui";
 import { useContext } from "react";
 import { useAppNavigation } from "../../../hooks/useAppNavigation";
 import { LoopContext } from "../../../providers/LoopContextProvider";
@@ -36,10 +36,28 @@ export const ActionCard = ({ action }) => {
 				alignItems="center"
 				justifyContent="space-between"
 			>
-				<Typography variant="bodyL" weight="bold">
-					{tokenValueTxt(action?.cost, UNIT_TOKEN.decimal, UNIT_TOKEN.ticker)}{" "}
-					to {getShortWallet(action?.payee)}
-				</Typography>{" "}
+				<Flexbox style={{ gap: "1.3rem" }} display="flex" alignItems="center">
+					<Typography variant="bodyL" weight="bold">
+						{tokenValueTxt(action?.cost, UNIT_TOKEN.decimal, UNIT_TOKEN.ticker)}{" "}
+					</Typography>{" "}
+					to
+					<StyledUserListItem
+						style={{ width: "fit-content" }}
+						avatar={{
+							alt: action?.payeeDetails?.username,
+							color: action?.payeeDetails?.color,
+							variant:
+								action?.payeeDetails?.avatar === null ||
+								action?.payeeDetails?.avatar === undefined
+									? "noimage"
+									: "image",
+							src:
+								action?.payeeDetails?.avatar !== null &&
+								action?.payeeDetails?.avatar !== undefined &&
+								action?.payeeDetails?.avatar,
+						}}
+					/>
+				</Flexbox>
 				{state !== 0 && (
 					<MentionTag text={state?.text} type={state?.colorVariant} />
 				)}{" "}
@@ -69,7 +87,11 @@ const CardStyle = styled.div`
 		}
 	}
 `;
-
+const StyledUserListItem = styled(UserListItem)`
+	&& {
+		width: fit-content;
+	}
+`;
 const GreenText = styled(Typography)`
 	color: ${rainbowsTheme.colors.superGreen75};
 `;
